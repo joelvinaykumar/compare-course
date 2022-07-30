@@ -1,0 +1,1 @@
+export const STORAGE_KEY_CONSTANT = "compare_course_token"
