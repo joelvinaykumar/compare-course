@@ -1,36 +1,44 @@
 import React, { useEffect, useState } from "react";
 import {
-  Row, Input, List, Space, Rate, Slider,
-  Typography, Tag, Comment, Avatar, Form, Button
+  Row,
+  Col,
+  Input,
+  List,
+  Space,
+  Slider,
+  Typography,
+  Tag,
+  Avatar,
+  Tooltip,
+  Card,
 } from "antd";
 import {
-  LikeOutlined,
-  MessageOutlined,
+  LikeFilled,
+  EyeFilled,
   SearchOutlined,
-  StarOutlined,
+  StarFilled,
   DeleteOutlined,
 } from "@ant-design/icons";
 import styled from "styled-components";
 
 import FilterBox from "./components";
-import {
-  selectCourse,
-  getCoursesAsync
-} from "../Admin/Courses.slice"
-import { useAppDispatch, useAppSelector } from "../../redux/hooks"
+import { selectCourse, getCoursesAsync } from "../Admin/coursesSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useNavigate } from "react-router-dom";
 
 type CoursesProps = {};
 
 const Courses: React.FC<CoursesProps> = () => {
-  
-  const dispatch = useAppDispatch()
-  const { courseData, status } = useAppSelector(selectCourse)
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate()
+  const { courseData, status } = useAppSelector(selectCourse);
+
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [rating, setRating] = useState<number>(5);
   const [classTypes, setClassTypes] = useState<string[]>([]);
-  const [showComments, setShowComments] = useState<boolean>(true);
-  const [comment, setComment] = useState<string>("");
-  const loading = status === "loading"
+  const [courseTypes, setCourseTypes] = useState<string[]>([]);
+  const [categoryTypes, setCategoryTypes] = useState<string[]>([]);
+  const loading = status === "loading";
 
   const classTypeOptions = ["Online", "Offline", "Hybrid"];
 
@@ -53,45 +61,24 @@ const Courses: React.FC<CoursesProps> = () => {
     "Placement Preparation",
   ];
 
-  const Editor = () => (
-    <Form
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 24 }}
-      layout="vertical"
-      initialValues={{ remember: true }}
-      onFinish={() => {}}
-      onFinishFailed={() => {}}
-    >
-      <Form.Item>
-        <Input.TextArea
-          rows={1}
-          onChange={e => setComment(e.target.value)}
-          value={comment}
-        />
-      </Form.Item>
-      <Form.Item>
-        <Button
-          htmlType="submit"
-          loading={loading}
-          type="primary"
-          size="small"
-        >
-          Add Comment
-        </Button>
-      </Form.Item>
-    </Form>
-  );
+  const clearAllFilters = () => {
+    setSearchQuery("");
+    setRating(5);
+    setClassTypes([]);
+    setCourseTypes([]);
+    setCategoryTypes([]);
+  };
 
-  const IconText = ({ icon, text, onClick }: any) => (
+  const IconText = ({ icon, text, key, color }: any) => (
     <Space>
-      {React.createElement(icon)}
+      {React.createElement(icon, { style: { color } })}
       {text}
     </Space>
   );
 
   useEffect(() => {
-    dispatch(getCoursesAsync())
-  }, []);
+    dispatch(getCoursesAsync());
+  }, [dispatch]);
 
   return (
     <Container>
@@ -109,7 +96,7 @@ const Courses: React.FC<CoursesProps> = () => {
           align="middle"
           style={{ marginBottom: 20, width: "90%" }}
         >
-          <ClearBtn>
+          <ClearBtn onClick={clearAllFilters}>
             Clear All Filters
             <DeleteOutlined />
           </ClearBtn>
@@ -125,100 +112,99 @@ const Courses: React.FC<CoursesProps> = () => {
         />
         <FilterBox
           title="Class Types"
+          getter={classTypes}
           options={classTypeOptions}
           setter={setClassTypes}
         />
         <FilterBox
           title="Course Types"
+          getter={courseTypes}
           options={courseTypeOptions}
-          setter={setClassTypes}
+          setter={setCourseTypes}
         />
         <FilterBox
           title="Category Types"
+          getter={categoryTypes}
           options={categoryOptions}
-          setter={setClassTypes}
+          setter={setCategoryTypes}
         />
       </Sidebar>
       <Content>
         {classTypes && (
           <SelectedTagsArea>
-            {classTypes.map((classType) => (
+            {classTypes.map((tag) => (
               <StyledTag
-                key={classType}
+                key={tag}
+                closable
                 onClose={(e) => {
-                  e.stopPropagation();
-                  console.log(e);
+                  setClassTypes(classTypes.filter((c) => c !== tag));
                 }}
               >
-                {classType}
+                {tag}
+              </StyledTag>
+            ))}
+            {courseTypes.map((tag) => (
+              <StyledTag
+                key={tag}
+                closable
+                onClose={(e) => {
+                  setCourseTypes(courseTypes.filter((c) => c !== tag));
+                }}
+              >
+                {tag}
+              </StyledTag>
+            ))}
+            {categoryTypes.map((tag) => (
+              <StyledTag
+                key={tag}
+                closable
+                onClose={(e) => {
+                  setCategoryTypes(categoryTypes.filter((c) => c !== tag));
+                }}
+              >
+                {tag}
               </StyledTag>
             ))}
           </SelectedTagsArea>
         )}
-        <List
-          itemLayout="vertical"
-          size="large"
-          dataSource={courseData}
-          renderItem={(item: any) => (
-            <List.Item
-              key={item.title}
-              style={{
-                backgroundColor: "white",
-                marginBottom: 10,
-                borderRadius: 10,
-              }}
-              actions={[
-                <IconText
-                  icon={StarOutlined}
-                  text="156"
-                  key="list-vertical-star-o"
-                />,
-                <IconText
-                  icon={LikeOutlined}
-                  text="156"
-                  key="list-vertical-like-o"
-                />,
-                <IconText
-                  icon={MessageOutlined}
-                  text="2"
-                  key="list-vertical-message"
-                  onClick={() => setShowComments(show => !show)}
-                />,
-              ]}
-              extra={
-                <img
-                  width={272}
-                  alt="logo"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                />
-              }
-            >
-              <List.Item.Meta
-                title={
-                  <a href={item.href}>
-                    {item.title}<br />
-                    <Rate allowHalf disabled count={5} value={4} />
-                  </a>
-                }
-                description={item.description}
-              />
-              {item.content}
-              <Editor />
-              {showComments && (
-                <Comment
-                  author={<a>Han Solo</a>}
-                  avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
-                  content={
-                    <p>
-                      We supply a series of design principles, practical patterns and high quality design
-                    </p>
+        <Row gutter={[40, 24]}>
+          {courseData.map((item: any) => (
+            <Col span={8}>
+              <Card
+                hoverable
+                cover={<CardCover />}
+                actions={[
+                  <EyeFilled onClick={() => navigate("abcd")} />
+                ]}
+              >
+                <Card.Meta
+                  title={
+                    <Space direction="vertical">
+                      <Typography.Text strong>{item.title}</Typography.Text>
+                      <Avatar.Group size="small" maxCount={3}>
+                        <Tooltip title="Aziz Nasser">
+                          <Avatar size="small" />
+                        </Tooltip>
+                        <Avatar size="small" />
+                        <Avatar size="small" />
+                        <Avatar size="small" />
+                        <Avatar size="small" />
+                      </Avatar.Group>
+                    </Space>
                   }
-                  datetime={new Date().toUTCString()}
+                  description={
+                    <Typography.Paragraph
+                      type="secondary"
+                      ellipsis={{ rows: 2 }}
+                    >
+                      {item.description}
+                    </Typography.Paragraph>
+                  }
                 />
-              )}             
-            </List.Item>
-          )}
-        />
+              </Card>
+            </Col>
+          ))}
+        </Row>
       </Content>
     </Container>
   );
@@ -265,4 +251,22 @@ const SelectedTagsArea = styled(Row)`
 const StyledTag = styled(Tag)`
   font-size: 16px;
   padding: 4px 16px;
+  margin-bottom: 10px;
+  background-color: #cddafd;
+  color: #1b263b;
+  filter: drop-shadow(1px 1px 10px rgba(205, 218, 253, 1));
 `;
+
+const CardCover = styled.div`
+  background-image: url("https://img-b.udemycdn.com/course/480x270/17782_50e2_14.jpg");
+  background-size: cover;
+  height: 150px;
+  border-radius: 10px;
+  transition: all 250ms ease-out;
+  display: hidden;
+  
+  &:hover {
+    display: visible;
+    box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.5);
+  }
+`

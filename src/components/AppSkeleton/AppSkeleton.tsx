@@ -35,4 +35,5 @@ export default AppSkeleton;
 
 const StyledContent = styled(Content)`
   margin: 0;
+  // background-color: white
 `

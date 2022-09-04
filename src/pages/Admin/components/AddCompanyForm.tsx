@@ -1,42 +1,53 @@
 import React from "react";
-import { Drawer, Form, Input, Space, Button } from "antd";
+import { Drawer, Form, Input, Space, Button, Select } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 
 import {
-  createInstituteAsync,
-  updateInstituteAsync,
-  getInstitutesAsync,
-  selectInstitute
-} from "../Institute.slice"
+  createCompanyAsync,
+  updateCompanyAsync,
+  getCompaniesAsync,
+  selectCompany
+} from "../companySlice"
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 
-type AddInstituteFormProps = {
+type AddCompanyFormProps = {
   open: boolean;
   onClose: () => void;
   data: any;
 };
 
-const AddInstituteForm: React.FC<AddInstituteFormProps> = ({
+const AddCompanyForm: React.FC<AddCompanyFormProps> = ({
   open,
   onClose,
   data = null,
 }) => {
 
   const dispatch = useAppDispatch()
-  const { status } = useAppSelector(selectInstitute)
+  const { status } = useAppSelector(selectCompany)
   const loading = status === "loading"
+
+  const modeOptions = [
+    { label: "Online", value: "Online"},
+    { label: "Offline", value: "Offline"},
+    { label: "Hybrid", value: "Hybrid"},
+  ]
+
+  const typeOptions = [
+    { label: "CompetetiveExams", value: "CompetetiveExams" },
+    { label: "Upskilling", value: "Upskilling"},
+  ]
 
   const handleSubmit = async (values: any) => {
     const input = {
       ...values,
-      faculty: values.faculty.map((f: any) => ({ name: f.name, picture: f.picture }))
+      faculty: values?.faculty?.map((f: any) => ({ name: f.name, picture: f.picture }))
     }
     if (data) {
-      await dispatch(updateInstituteAsync({ id: data?._id, input }))
-      dispatch(getInstitutesAsync())
+      await dispatch(updateCompanyAsync({ id: data?._id, input }))
+      dispatch(getCompaniesAsync())
     } else {
-      dispatch(createInstituteAsync(input))
+      dispatch(createCompanyAsync(input))
     }
   };
 
@@ -46,8 +57,9 @@ const AddInstituteForm: React.FC<AddInstituteFormProps> = ({
     <Drawer
       visible={open}
       onClose={onClose}
+      width={800}
       placement="right"
-      title={data? "Edit Institute data": "Add Institute"}
+      title={data? "Edit Company data": "Add Company"}
     >
       <Form
         labelCol={{ span: 8 }}
@@ -58,12 +70,18 @@ const AddInstituteForm: React.FC<AddInstituteFormProps> = ({
         onFinishFailed={handleSubmitFailed}
       >
         <Form.Item label="Name" name="name" rules={[{ required: true }]}>
-          <Input />
+          <Input placeholder="Eg: Broadridge Solutions" />
         </Form.Item>
         <Form.Item label="About" name="about" rules={[{ required: false }]}>
-          <Input.TextArea />
+          <Input.TextArea maxLength={1000} showCount />
         </Form.Item>
-        <Form.List name="faculty">
+        <Form.Item label="Mode" name="mode" rules={[{ required: true }]}>
+          <Select mode="multiple" options={modeOptions} placeholder="Select multiple modes" />
+        </Form.Item>
+        <Form.Item label="Type" name="type" rules={[{ required: true }]}>
+          <Select options={typeOptions} />
+        </Form.Item>
+        <Form.List name="faculty" initialValue={[]}>
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ key, name, ...restField }) => {
@@ -95,7 +113,7 @@ const AddInstituteForm: React.FC<AddInstituteFormProps> = ({
                   block
                   icon={<PlusOutlined />}
                 >
-                  Add Faculty
+                  Add Faculty (Optional)
                 </Button>
               </Form.Item>
             </>
@@ -109,7 +127,7 @@ const AddInstituteForm: React.FC<AddInstituteFormProps> = ({
   );
 };
 
-export default AddInstituteForm;
+export default AddCompanyForm;
 
 const FullWidthButton = styled(Button)`
   width: 100%;

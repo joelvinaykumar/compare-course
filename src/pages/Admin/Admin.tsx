@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Outlet, useNavigate } from "react-router-dom"
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Layout, Menu, Typography } from "antd";
 import { BankTwoTone, BookTwoTone, HomeTwoTone } from "@ant-design/icons";
 
@@ -12,29 +12,35 @@ type AdminProps = {};
 const { Sider, Content } = Layout;
 
 const Admin: React.FC<AdminProps> = () => {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const location = useLocation()
 
   const menuItems = [
     {
       label: "Home",
-      link: ROUTES.HOME,
+      route: ROUTES.HOME,
       icon: <HomeTwoTone twoToneColor={theme.primary} />,
-      key: "1",
     },
     {
-      label: "Institute",
-      link: ROUTES.INSTITUTE,
+      label: "Company",
+      route: ROUTES.COMPANY,
       icon: <BankTwoTone twoToneColor={theme.primary} />,
-      key: "2",
     },
     {
       label: "Courses",
-      link: ROUTES.COURSE,
+      route: ROUTES.COURSE,
       icon: <BookTwoTone twoToneColor={theme.primary} />,
-      key: "3",
     },
   ];
+
+  const currentMenuItem = () => {
+    if (location.pathname === "/admin") {
+      return [menuItems[0]?.label];
+    }
+    const path = location.pathname.substring(7, location.pathname.length);
+    console.log(path)
+    return [menuItems.filter((menu) => menu.route === path)[0]?.label];
+  };
 
   return (
     <Container>
@@ -48,13 +54,13 @@ const Admin: React.FC<AdminProps> = () => {
             left: 0,
             top: 0,
             bottom: 0,
-            padding: "80px 0"
+            padding: "80px 0",
           }}
         >
-          <Menu defaultSelectedKeys={["1"]}>
+          <Menu defaultSelectedKeys={currentMenuItem()}>
             {menuItems.map((item) => (
-              <Menu.Item key={item.key} icon={item.icon}>
-                <Typography.Text strong onClick={() => navigate(item.link)}>
+              <Menu.Item key={item.label} icon={item.icon}>
+                <Typography.Text onClick={() => navigate(item.route)}>
                   {item.label}
                 </Typography.Text>
               </Menu.Item>
@@ -62,9 +68,9 @@ const Admin: React.FC<AdminProps> = () => {
           </Menu>
         </Sider>
       </Layout>
-        <StyledContent style={{margin: 0}}>
-          <Outlet />
-        </StyledContent>
+      <StyledContent style={{ margin: 0 }}>
+        <Outlet />
+      </StyledContent>
     </Container>
   );
 };
@@ -82,4 +88,4 @@ const Container = styled.div`
 const StyledContent = styled(Content)`
   margin: 0;
   width: 75%;
-`
+`;

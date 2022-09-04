@@ -12,7 +12,7 @@ const AnimatedPage: React.FC = ({ children }) => {
   return (
     <motion.div
       variants={animationStyles}
-      transition={{ ease: "circIn", duration: 0.5 }}
+      transition={{ ease: "circIn", duration: 0.25 }}
       initial="initial"
       animate="animate"
       exit="exit"

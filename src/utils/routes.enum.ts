@@ -2,7 +2,8 @@ export enum ROUTES {
   HOME = "",
   COURSES = "courses",
   ADMIN = "admin",
-  INSTITUTE = "institute",
-  INSTITUTE_BY_ID = "institute/:id",
+  COMPANY = "company",
+  COMPANY_BY_ID = "company/:id",
+  COURSE_BY_ID = "courses/:id",
   COURSE = "course"
 }

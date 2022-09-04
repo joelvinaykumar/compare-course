@@ -1,14 +1,17 @@
 import axios from "axios"
 import { notification } from "antd"
+import { STORAGE_KEY_CONSTANT } from "./constants";
 
 const instance =  axios.create({
   baseURL: process.env.REACT_APP_API_HOST,
-  headers: {},
-  timeout: 10 * 1000,
+  headers: {
+    "Authorization": `Bearer ${localStorage.getItem(STORAGE_KEY_CONSTANT)}`
+  },
+  timeout: 15 * 1000,
 })
 
 instance.interceptors.response.use(
-  (response) => response.data,
+  (response) => response,
   (error) => {
     if(error.response.status === 401 || error.response.status === 403) {
       // logout

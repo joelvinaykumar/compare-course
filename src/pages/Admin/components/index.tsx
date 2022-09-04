@@ -1,5 +1,5 @@
 import AdminLogin from "./AdminLogin";
 import Courses from "./Courses";
-import Institutes from "./Institutes";
+import Companies from "./Companies";
 
-export { Courses, Institutes, AdminLogin };
+export { Courses, Companies, AdminLogin };

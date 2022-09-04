@@ -101,8 +101,8 @@ export const courseSlice = createSlice({
       })
       .addCase(getCoursesAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.courseData = action.payload;
-        notification.success({ message: "Fetched Courses successfully!" });
+        // @ts-ignore
+        state.courseData = new Array(10).fill(...action.payload);
       })
       .addCase(getCoursesAsync.rejected, (state, action: any) => {
         state.status = "failed";

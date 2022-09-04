@@ -9,43 +9,46 @@ import {
   Space,
   Popconfirm,
   Tooltip,
+  Tag,
 } from "antd";
+import { useNavigate } from "react-router-dom";
 import { PlusCircleFilled, EditFilled, DeleteFilled, EyeFilled } from "@ant-design/icons";
 
-import AddInstituteForm from "./AddInstituteForm";
+import AddCompanyForm from "./AddCompanyForm";
 import {
-  deleteInstitutesAsync,
-  getInstitutesAsync,
-  selectInstitute,
-} from "../Institute.slice";
+  deleteCompanyAsync,
+  getCompaniesAsync,
+  selectCompany,
+} from "../companySlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import theme from "../../../utils/theme";
-import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { ROUTES } from "../../../utils/routes.enum";
 
-type InstitutesProps = {};
+type CompaniesProps = {};
 
-const Institutes: React.FC<InstitutesProps> = () => {
+const Companies: React.FC<CompaniesProps> = () => {
 
   const dispatch = useAppDispatch();
-  const location = useLocation();
   const navigate = useNavigate()
-  const { instituteData, status } = useAppSelector(selectInstitute);
+  const { instituteData, status } = useAppSelector(selectCompany);
   const loading = status === "loading"
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [formData, setFormData] = useState(null);
 
-  const openInstittuteForm = () => setOpenForm(true);
+  const openCompanyForm = () => {
+    setFormData(null);
+    setOpenForm(true)
+  };
   const closeForm = () => setOpenForm(false);
   const handleDelete = async (id: string) => {
-    await dispatch(deleteInstitutesAsync(id))
-    dispatch(getInstitutesAsync())
+    await dispatch(deleteCompanyAsync(id))
+    dispatch(getCompaniesAsync())
   }
 
   const rowActions = [
     {
       icon: <EyeFilled />,
-      onclick: (record: any) => navigate(`${ROUTES.INSTITUTE}/${record._id}`, { replace: true }),
+      onclick: (record: any) => navigate(`${ROUTES.COMPANY}/${record._id}`, { replace: true }),
       label: "Preview"
     },
     {
@@ -65,7 +68,7 @@ const Institutes: React.FC<InstitutesProps> = () => {
     },
     {
       path: "first",
-      breadcrumbName: "Institutes",
+      breadcrumbName: "Companies",
     },
   ];
 
@@ -80,6 +83,21 @@ const Institutes: React.FC<InstitutesProps> = () => {
       dataIndex: "about",
       key: "about",
       ellipsis: true,
+    },
+    {
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
+    },
+    {
+      title: "Mode",
+      dataIndex: "mode",
+      key: "mode",
+      render: (data: any) => (
+        <Space>
+          {data?.map((m: string) => <Tag>{m}</Tag>)}
+        </Space>
+      )
     },
     {
       title: "Faculty",
@@ -107,7 +125,7 @@ const Institutes: React.FC<InstitutesProps> = () => {
       title: "Actions",
       dataIndex: "action",
       key: "action",
-      render: (text: string, record: any, index: number) => (
+      render: (text: string, record: any) => (
         <Space>
           {rowActions.map((row, index) => (
             <Tooltip key={index} title={row.label} placement="top">
@@ -133,8 +151,8 @@ const Institutes: React.FC<InstitutesProps> = () => {
   ];
 
   useEffect(() => {
-    dispatch(getInstitutesAsync());
-  }, []);
+    dispatch(getCompaniesAsync());
+  }, [dispatch]);
 
   return (
     <Container>
@@ -142,16 +160,16 @@ const Institutes: React.FC<InstitutesProps> = () => {
         title={() => (
           <StyledRow justify="space-between">
             <PageHeader
-              title="Institutes"
-              subTitle="Control data of institutes here"
+              title="Companies"
+              subTitle="Control data of companies here"
               breadcrumb={{ routes }}
             />
             <Button
               type="primary"
               icon={<PlusCircleFilled />}
-              onClick={openInstittuteForm}
+              onClick={openCompanyForm}
             >
-              Add Institute
+              Onboard Company
             </Button>
           </StyledRow>
         )}
@@ -160,13 +178,13 @@ const Institutes: React.FC<InstitutesProps> = () => {
         pagination={false}
       />
       {openForm && (
-        <AddInstituteForm open={openForm} onClose={closeForm} data={formData} />
+        <AddCompanyForm open={openForm} onClose={closeForm} data={formData} />
       )}
     </Container>
   );
 };
 
-export default Institutes;
+export default Companies;
 
 const Container = styled.div`
   width: 100%;

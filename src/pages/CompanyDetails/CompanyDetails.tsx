@@ -1,16 +1,14 @@
 import React, { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import styled from "styled-components"
-import { Row, Col, Typography } from "antd"
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { getCompanyByIdAsync, selectCompany } from "../Admin/companySlice";
 
-type CourseDetailsProps = {
+type CompanyDetailsProps = {
 
 }
 
-const CourseDetails: React.FC<CourseDetailsProps> = () => {
+const CompanyDetails: React.FC<CompanyDetailsProps> = ({}) => {
 
   const { id } = useParams()
   const dispatch = useAppDispatch()
@@ -21,21 +19,10 @@ const CourseDetails: React.FC<CourseDetailsProps> = () => {
   }, [])
 
   return (
-    <Row justify="center">
-      <CourseCover>
-        
-      </CourseCover>
-    </Row>
+    <div>
+      {JSON.stringify(instituteDetails)}
+    </div>
   )
 };
 
-export default CourseDetails;
-
-
-const CourseCover = styled(Row)`
-  margin-top: 100px;
-  border-radius: 20px;
-  height: 250px;
-  width: 95%;
-  background-color: #173753;
-`
+export default CompanyDetails;

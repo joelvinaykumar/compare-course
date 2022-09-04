@@ -1,5 +1,5 @@
 import React from "react";
-import { Drawer, Form, Input, Space, Button, Select } from "antd";
+import { Drawer, Form, Input, Space, Button, Select, Row, Col } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 
@@ -8,7 +8,7 @@ import {
   updateCourseAsync,
   getCoursesAsync,
   selectCourse
-} from "../Courses.slice"
+} from "../coursesSlice"
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 
 type AddCourseFormProps = {
@@ -66,6 +66,7 @@ const AddCourseForm: React.FC<AddCourseFormProps> = ({
     <Drawer
       visible={open}
       onClose={onClose}
+      width={800}
       placement="right"
       title={data? "Edit Course data": "Add Course"}
     >
@@ -107,22 +108,24 @@ const AddCourseForm: React.FC<AddCourseFormProps> = ({
         <Form.Item label="Link" name="link" rules={[{ required: false }]}>
           <Input />
         </Form.Item>
-        <Form.List name="curricuulum">
+        <Form.List name="curricuulum" initialValue={[]}>
           {(fields, { add, remove }) => (
-            <>
+            <Row>
               {fields.map(({ key, name, ...restField }) => {
                 const removeFormItem = () => remove(name);
                 return (
-                  <Space key={key} align="baseline">
-                    <Form.Item
-                      {...restField}
-                      name={[name, "point"]}
-                      rules={[{ required: true, message: "Missing name" }]}
-                    >
-                      <Input placeholder="This course helps with..." />
-                    </Form.Item>
-                    <MinusCircleOutlined onClick={removeFormItem} />
-                  </Space>
+                  <Col span={24}>
+                    <Space key={key} align="baseline">
+                      <Form.Item
+                        {...restField}
+                        name={[name, "point"]}
+                        rules={[{ required: true, message: "Missing name" }]}
+                      >
+                        <Input placeholder="This course helps with..." />
+                      </Form.Item>
+                      <MinusCircleOutlined onClick={removeFormItem} />
+                    </Space>
+                  </Col>
                 );
               })}
               <Form.Item>
@@ -135,7 +138,7 @@ const AddCourseForm: React.FC<AddCourseFormProps> = ({
                   Add syllabus in curricuulum
                 </Button>
               </Form.Item>
-            </>
+            </Row>
           )}
         </Form.List>
         <Form.List name="instructor">

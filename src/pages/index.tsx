@@ -1,7 +1,8 @@
 import Admin from "./Admin";
 import Courses from "./Courses";
 import Home from "./Home";
-import InstituteDetails from "./InstituteDetails";
+import CompanyDetails from "./CompanyDetails";
+import CourseDetails from "./CourseDetails";
 import NotFound from "./NotFound";
 
 export {
@@ -9,5 +10,6 @@ export {
   Courses,
   NotFound,
   Admin,
-  InstituteDetails
+  CompanyDetails as InstituteDetails,
+  CourseDetails,
 }

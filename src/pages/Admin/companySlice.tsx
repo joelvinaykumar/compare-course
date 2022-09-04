@@ -4,21 +4,21 @@ import { notification } from "antd";
 import { RootState } from "../../redux/store";
 import API from "../../utils/axios";
 
-export interface InstituteState {
+export interface CompanyState {
   instituteData: any;
   instituteDetails: any;
   status: "idle" | "loading" | "failed";
   error: string | null;
 }
 
-const initialState: InstituteState = {
+const initialState: CompanyState = {
   instituteData: [],
   instituteDetails: {},
   status: "idle",
   error: null,
 };
 
-export const createInstituteAsync = createAsyncThunk(
+export const createCompanyAsync = createAsyncThunk(
   "admin/createInstitute",
   async (input: any, { rejectWithValue }) => {
     try {
@@ -29,7 +29,7 @@ export const createInstituteAsync = createAsyncThunk(
   }
 );
 
-export const getInstitutesAsync = createAsyncThunk(
+export const getCompaniesAsync = createAsyncThunk(
   "admin/getInstitutes",
   async (_, { rejectWithValue }) => {
     try {
@@ -40,7 +40,7 @@ export const getInstitutesAsync = createAsyncThunk(
   }
 );
 
-export const getInstituteByIdAsync = createAsyncThunk(
+export const getCompanyByIdAsync = createAsyncThunk(
   "admin/getInstituteById",
   async (id: string, { rejectWithValue }) => {
     try {
@@ -51,7 +51,7 @@ export const getInstituteByIdAsync = createAsyncThunk(
   }
 );
 
-export const updateInstituteAsync = createAsyncThunk(
+export const updateCompanyAsync = createAsyncThunk(
   "admin/updateInstitute",
   async ({ id, input }: { id: string; input: any }, { rejectWithValue }) => {
     try {
@@ -62,7 +62,7 @@ export const updateInstituteAsync = createAsyncThunk(
   }
 );
 
-export const deleteInstitutesAsync = createAsyncThunk(
+export const deleteCompanyAsync = createAsyncThunk(
   "admin/deleteInstitute",
   async (id: string, { rejectWithValue }) => {
     try {
@@ -73,22 +73,21 @@ export const deleteInstitutesAsync = createAsyncThunk(
   }
 );
 
-export const instituteSlice = createSlice({
+export const companySlice = createSlice({
   name: "institute",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     // Create
     builder
-      .addCase(createInstituteAsync.pending, (state, action) => {
+      .addCase(createCompanyAsync.pending, (state, action) => {
         state.status = "loading";
       })
-      .addCase(createInstituteAsync.fulfilled, (state, action) => {
+      .addCase(createCompanyAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.instituteData = [...state.instituteData, action.payload];
-        notification.success({ message: "Created Institute successfully!" });
       })
-      .addCase(createInstituteAsync.rejected, (state, action: any) => {
+      .addCase(createCompanyAsync.rejected, (state, action: any) => {
         state.status = "failed";
         state.error = String(action?.payload?.message);
         notification.error({ message: action?.payload?.message });
@@ -96,15 +95,14 @@ export const instituteSlice = createSlice({
 
     // Get all
     builder
-      .addCase(getInstitutesAsync.pending, (state, action) => {
+      .addCase(getCompaniesAsync.pending, (state, action) => {
         state.status = "loading";
       })
-      .addCase(getInstitutesAsync.fulfilled, (state, action) => {
+      .addCase(getCompaniesAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.instituteData = action.payload;
-        notification.success({ message: "Fetched Institutes successfully!" });
       })
-      .addCase(getInstitutesAsync.rejected, (state, action: any) => {
+      .addCase(getCompaniesAsync.rejected, (state, action: any) => {
         state.status = "failed";
         state.error = String(action?.payload?.message);
         notification.error({ message: action?.payload?.message });
@@ -112,15 +110,14 @@ export const instituteSlice = createSlice({
 
     // Get details
     builder
-      .addCase(getInstituteByIdAsync.pending, (state, action) => {
+      .addCase(getCompanyByIdAsync.pending, (state, action) => {
         state.status = "loading";
       })
-      .addCase(getInstituteByIdAsync.fulfilled, (state, action) => {
+      .addCase(getCompanyByIdAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.instituteDetails = action.payload;
-        notification.success({ message: "Fetched Institutes successfully!" });
       })
-      .addCase(getInstituteByIdAsync.rejected, (state, action: any) => {
+      .addCase(getCompanyByIdAsync.rejected, (state, action: any) => {
         state.status = "failed";
         state.error = String(action?.payload?.message);
         notification.error({ message: action?.payload?.message });
@@ -128,14 +125,13 @@ export const instituteSlice = createSlice({
 
     // Update
     builder
-      .addCase(updateInstituteAsync.pending, (state, action) => {
+      .addCase(updateCompanyAsync.pending, (state, action) => {
         state.status = "loading";
       })
-      .addCase(updateInstituteAsync.fulfilled, (state, action) => {
+      .addCase(updateCompanyAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        notification.success({ message: "Updated Institute successfully!" });
       })
-      .addCase(updateInstituteAsync.rejected, (state, action: any) => {
+      .addCase(updateCompanyAsync.rejected, (state, action: any) => {
         state.status = "failed";
         state.error = String(action?.payload?.message);
         notification.error({ message: action?.payload?.message });
@@ -143,14 +139,14 @@ export const instituteSlice = createSlice({
 
     // Delete
     builder
-      .addCase(deleteInstitutesAsync.pending, (state, action) => {
+      .addCase(deleteCompanyAsync.pending, (state, action) => {
         state.status = "loading";
       })
-      .addCase(deleteInstitutesAsync.fulfilled, (state, action) => {
+      .addCase(deleteCompanyAsync.fulfilled, (state, action) => {
         state.status = "idle";
         notification.success({ message: "Deleted successfully!" });
       })
-      .addCase(deleteInstitutesAsync.rejected, (state, action: any) => {
+      .addCase(deleteCompanyAsync.rejected, (state, action: any) => {
         state.status = "failed";
         state.error = String(action?.payload?.message);
         notification.error({ message: action?.payload?.message });
@@ -158,6 +154,6 @@ export const instituteSlice = createSlice({
   },
 });
 
-export const selectInstitute = (state: RootState) => state.institute;
+export const selectCompany = (state: RootState) => state.company;
 
-export default instituteSlice.reducer;
+export default companySlice.reducer;

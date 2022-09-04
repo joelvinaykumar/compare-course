@@ -19,7 +19,7 @@ import {
   deleteCourseAsync,
   getCoursesAsync,
   selectCourse,
-} from "../Courses.slice";
+} from "../coursesSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import theme from "../../../utils/theme";
 
@@ -120,9 +120,7 @@ const Courses: React.FC<CoursesProps> = () => {
               setOpenForm(true)
               setFormData(record)
             }}
-          >
-            Edit
-          </Button>
+          />
           <Popconfirm
             title="Sure to delete?"
             onConfirm={() => handleDelete(record?._id)}
@@ -132,9 +130,7 @@ const Courses: React.FC<CoursesProps> = () => {
               type="text"
               loading={loading}
               icon={<DeleteFilled />}
-            >
-              Delete
-            </Button>
+            />
           </Popconfirm>
         </Space>
       ),
