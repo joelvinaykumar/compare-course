@@ -9,12 +9,12 @@ import {
   Dropdown,
   Avatar,
 } from "antd";
+import { LogoutOutlined, UserOutlined, CaretDownFilled } from "@ant-design/icons";
 import styled from "styled-components";
 
 import { AddReview } from "..";
 import { ROUTES } from "../../utils/routes.enum";
-import { currentUser, RoleLabel } from "../../utils/constants";
-import { LogoutOutlined } from "@ant-design/icons";
+import { currentUser, USER_ROLES } from "../../utils/constants";
 import { logOutAsync } from "../AddReview/loginSlice";
 import { useAppDispatch } from "../../redux/hooks";
 
@@ -27,20 +27,52 @@ const Navbar: React.FC<NavbarProps> = () => {
 
   const [openLogin, setOpenLogin] = useState(false);
 
-  const routes = [
-    { title: "Home", route: ROUTES.HOME },
-    {
-      title: "Courses",
-      route: null,
-      children: [
-        { title: "Data Science Courses", route: ROUTES.COURSES },
-        { title: "Cloud Engineering Courses", route: ROUTES.COURSES },
-        { title: "Fullstack Development Courses", route: ROUTES.COURSES },
-        { title: "Devops Courses", route: ROUTES.COURSES },
-        { title: "Cyber Security Courses", route: ROUTES.COURSES },
-      ],
-    },
-  ];
+  const getRoutes = () => {
+    const routes = [
+      { title: "Home", route: "/" },
+      {
+        title: "Courses",
+        route: null,
+        children: [
+          { title: "Data Science Courses", route: ROUTES.COURSES },
+          { title: "Cloud Engineering Courses", route: ROUTES.COURSES },
+          { title: "Fullstack Development Courses", route: ROUTES.COURSES },
+          { title: "Devops Courses", route: ROUTES.COURSES },
+          { title: "Cyber Security Courses", route: ROUTES.COURSES },
+        ],
+      },
+    ]
+
+    switch (currentUser?.role) {
+      case USER_ROLES.SUPER_ADMIN:
+        return [
+          {
+            title: "Home",
+            route: ROUTES.SUPERADMIN,
+          }
+        ]
+      case USER_ROLES.ADMIN:
+        return [
+          ...routes,
+          {
+            title: "Dashboard",
+            route: ROUTES.ADMIN,
+          },
+          {
+            title: "Courses",
+            route: ROUTES.COURSES,
+          },
+          {
+            title: "Company Profile",
+            route: ROUTES.COMPANY_BY_ID,
+          }
+        ]
+      case USER_ROLES.USER:
+        return routes
+      default:
+        return routes;
+    }
+  }
 
   const routeTo = (route: string | null) => () => {
     if (route) navigate(route);
@@ -48,6 +80,11 @@ const Navbar: React.FC<NavbarProps> = () => {
   };
 
   let profileMenuItems: any = [
+    {
+      title: "Profile",
+      icon: <UserOutlined />,
+      onClick: () => dispatch(logOutAsync()),
+    },
     {
       title: "Logout",
       icon: <LogoutOutlined />,
@@ -57,8 +94,8 @@ const Navbar: React.FC<NavbarProps> = () => {
 
   const ProfileMenu = (
     <Dropdown
-      placement="bottomRight"
-      overlayStyle={{ minWidth: 200 }}
+      arrow
+      placement="bottom"
       overlay={
         <Menu>
           {profileMenuItems.map((item: any) => (
@@ -73,17 +110,23 @@ const Navbar: React.FC<NavbarProps> = () => {
         </Menu>
       }
     >
-      <Avatar size="large" src={currentUser?.picture} />
+      <Button type="text">
+        <Space>
+          <Avatar src={currentUser?.picture} />
+          <Typography.Text>Joel Vinay Kumar</Typography.Text>
+          <ArrowDownIcon />
+        </Space>
+      </Button>
     </Dropdown>
   );
 
   return (
     <StyledHeader>
       <LeftMenu theme="light" mode="horizontal" expandIcon>
-        <Menu.Item>
+        <Menu.Item disabled>
           <Logo src={require("../../assets/logo.png")} />
         </Menu.Item>
-        {routes.map((route, index) => (
+        {getRoutes()?.map((route, index) => (
           <Menu.Item
             key={index + 1}
             defaultValue={0}
@@ -107,26 +150,12 @@ const Navbar: React.FC<NavbarProps> = () => {
       </LeftMenu>
       <RightMenu>
         <Space align="end" size={30}>
-          <Button type="primary" onClick={() => setOpenLogin(true)}>
-            Add Review
-          </Button>
-          {currentUser && (
-            <Space>
-              <ProfileName>
-                <Typography.Text strong style={{ height: 20 }}>
-                  {currentUser?.name}
-                </Typography.Text>
-                <Typography.Text
-                  type="secondary"
-                  style={{ height: 15, whiteSpace: "nowrap" }}
-                >
-                  {/* @ts-ignore */}
-                  {RoleLabel[currentUser?.role]}
-                </Typography.Text>
-              </ProfileName>
-              {ProfileMenu}
-            </Space>
+          {![USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN].includes(currentUser?.role) && (
+            <StyledButton type="primary" onClick={() => setOpenLogin(true)}>
+              Write a Review
+            </StyledButton>
           )}
+          {currentUser?.name ? ProfileMenu: null}
         </Space>
       </RightMenu>
       {openLogin && (
@@ -149,11 +178,7 @@ const StyledHeader = styled(Header)`
 `;
 
 const Logo = styled.img`
-  display: flex;
-  width: 64px;
-  height: 64px;
-  padding: 10px;
-  background-color: white;
+  width: 80px;
 `;
 
 const LeftMenu = styled(Menu)`
@@ -167,13 +192,13 @@ const RightMenu = styled(Menu)`
   width: 50%;
   justify-content: flex-end;
   align-items: center;
-  padding-right: 50px;
+  padding-right: 20px;
 `;
 
-const ProfileName = styled.div`
-  display: flex;
-  flex-direction: column;
-  text-align: right;
-  backgroun-color: red;
-  height: 80px;
-`;
+const StyledButton = styled(Button)`
+  filter: drop-shadow(1px 5px 12px rgba(29, 51, 84, 0.5))
+`
+
+const ArrowDownIcon = styled(CaretDownFilled)`
+  font-size: 18px;
+`

@@ -46,7 +46,7 @@ export const loginSlice = createSlice({
     logOutAsync: () => {
       localStorage.removeItem(STORAGE_KEY_CONSTANT)
       localStorage.removeItem(USER_KEY_CONSTANT)
-      window.location.reload()
+      window.location.href = "/"
     }
   },
   extraReducers: (builder) => {

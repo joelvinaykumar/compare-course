@@ -6,9 +6,11 @@ import {
   Home,
   Courses as BestCourses,
   Admin,
+  SuperAdmin,
   InstituteDetails,
   NotFound,
   CourseDetails,
+  Unauthorized,
 } from "../../pages";
 import { Companies, Courses, AdminLogin } from "../../pages/Admin/components";
 import { AppSkeleton } from "..";
@@ -30,7 +32,9 @@ const AnimatedRoutes: React.FC = () => {
             <Route path={ROUTES.COMPANY} element={<Companies />} />
             <Route path={ROUTES.COURSE} element={<Courses />} />
           </Route>
+        <Route path={ROUTES.SUPERADMIN} element={<SuperAdmin />} />
         </Route>
+        <Route path={ROUTES.UNAUTHORIZED} element={<Unauthorized />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>

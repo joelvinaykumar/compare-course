@@ -9,7 +9,7 @@ module.exports = {
           lessOptions: {
             modifyVars: {
               '@theme': 'dark',
-              '@primary-color': '#173753',
+              '@primary-color': '#1D3354',
               '@secondary-color': '#6DAEDB',
               '@border-radius-base': '8px',
               '@checkbox-border-radius': '2px',
