@@ -7,12 +7,13 @@ import {
   Courses as BestCourses,
   Admin,
   SuperAdmin,
-  InstituteDetails,
   NotFound,
   CourseDetails,
+  Review,
   Unauthorized,
 } from "../../pages";
-import { Companies, Courses, AdminLogin } from "../../pages/Admin/components";
+import { CompanyDetails } from "../../pages/SuperAdmin/components"
+import { Courses, AdminLogin } from "../../pages/Admin/components";
 import { AppSkeleton } from "..";
 import { ROUTES } from "../../utils/routes.enum";
 
@@ -25,11 +26,11 @@ const AnimatedRoutes: React.FC = () => {
         <Route path={ROUTES.HOME} element={<AppSkeleton />}>
           <Route path={ROUTES.HOME} element={<Home />} />
           <Route path={ROUTES.COURSES} element={<BestCourses />} />
-          <Route path={ROUTES.COMPANY_BY_ID} element={<InstituteDetails />} />
+          <Route path={ROUTES.REVIEW} element={<Review />} />
+          <Route path={ROUTES.COMPANY_BY_ID} element={<CompanyDetails />} />
           <Route path={ROUTES.COURSE_BY_ID} element={<CourseDetails />} />
           <Route path={ROUTES.ADMIN} element={<Admin />}>
             <Route path={ROUTES.HOME} element={<AdminLogin />} />
-            <Route path={ROUTES.COMPANY} element={<Companies />} />
             <Route path={ROUTES.COURSE} element={<Courses />} />
           </Route>
         <Route path={ROUTES.SUPERADMIN} element={<SuperAdmin />} />

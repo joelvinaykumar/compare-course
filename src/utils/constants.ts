@@ -14,3 +14,9 @@ export const RoleLabel = {
   "Admin": "Company Administrator",
   "SuperAdmin": "SaaS Administrator",
 }
+
+export const tagColors = [
+  "#CBF3F0",
+  "#f2e2ba",
+  "#F8AD9D"
+]

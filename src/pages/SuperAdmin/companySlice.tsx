@@ -45,7 +45,8 @@ export const getCompanyByIdAsync = createAsyncThunk(
   "admin/getInstituteById",
   async (id: string, { rejectWithValue }) => {
     try {
-      return await API.get(`/institute/${id}`);
+      const res = await API.get(`/institute/${id}`);
+      return res.data
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -101,7 +102,7 @@ export const companySlice = createSlice({
       })
       .addCase(getCompaniesAsync.fulfilled, (state, action: any) => {
         state.status = "idle";
-        state.instituteData = action.payload?.data?.data;
+        state.instituteData = action.payload;
       })
       .addCase(getCompaniesAsync.rejected, (state, action: any) => {
         state.status = "failed";

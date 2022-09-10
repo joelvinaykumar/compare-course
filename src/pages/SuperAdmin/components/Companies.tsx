@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom"
 import {
   Row,
   Table,
@@ -11,10 +12,9 @@ import {
   Tooltip,
   Tag,
 } from "antd";
-import { useNavigate } from "react-router-dom";
 import { PlusCircleFilled, EditFilled, DeleteFilled, EyeFilled } from "@ant-design/icons";
 
-import AddCompanyForm from "./AddCompanyForm";
+import CompanyForm from "./CompanyForm";
 import {
   deleteCompanyAsync,
   getCompaniesAsync,
@@ -22,6 +22,8 @@ import {
 } from "../companySlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import theme from "../../../utils/theme";
+import { tagColors } from "../../../utils/constants";
+import { CustomButton } from "../../../components";
 import { ROUTES } from "../../../utils/routes.enum";
 
 type CompaniesProps = {};
@@ -48,7 +50,7 @@ const Companies: React.FC<CompaniesProps> = () => {
   const rowActions = [
     {
       icon: <EyeFilled />,
-      onclick: (record: any) => navigate(`${ROUTES.COMPANY}/${record._id}`, { replace: true }),
+      onclick: (record: any) => navigate(`../${ROUTES.COMPANY}/${record._id}`, { replace: true }),
       label: "Preview"
     },
     {
@@ -79,12 +81,6 @@ const Companies: React.FC<CompaniesProps> = () => {
       key: "name",
     },
     {
-      title: "About",
-      dataIndex: "about",
-      key: "about",
-      ellipsis: true,
-    },
-    {
       title: "Type",
       dataIndex: "type",
       key: "type",
@@ -93,9 +89,9 @@ const Companies: React.FC<CompaniesProps> = () => {
       title: "Mode",
       dataIndex: "mode",
       key: "mode",
-      render: (data: any) => (
+      render: (data: any, _: any) => (
         <Space>
-          {data?.map((m: string) => <Tag>{m}</Tag>)}
+          {data?.map((m: string, i: number) => <StyledTag color={tagColors[i]}>{m}</StyledTag>)}
         </Space>
       )
     },
@@ -162,13 +158,13 @@ const Companies: React.FC<CompaniesProps> = () => {
           subTitle="Control data of companies here"
           breadcrumb={{ routes }}
         />
-        <Button
+        <CustomButton
           type="primary"
           icon={<PlusCircleFilled />}
           onClick={openCompanyForm}
         >
           Onboard Company
-        </Button>
+        </CustomButton>
       </StyledRow>
       <StyledTable
         columns={columns}
@@ -176,7 +172,7 @@ const Companies: React.FC<CompaniesProps> = () => {
         pagination={false}
       />
       {openForm && (
-        <AddCompanyForm open={openForm} onClose={closeForm} data={formData} />
+        <CompanyForm open={openForm} onClose={closeForm} data={formData} />
       )}
     </Container>
   );
@@ -198,8 +194,15 @@ const StyledRow = styled(Row)`
 const StyledTable = styled(Table)`
   margin-top: 20px;
   width: 100%;
+  filter: drop-shadow(1px 5px 12px rgba(29, 51, 84, 0.05));
 `;
 
 const StyledAvatar = styled(Avatar)<{ color: string }>`
   background-color: ${(props) => props.color};
+`;
+
+const StyledTag = styled(Tag)<{ color: string }>`
+  background-color: ${(props) => props.color};
+  filter: drop-shadow(1px 3px 4px ${(props) => props.color});
+  color: black;
 `;

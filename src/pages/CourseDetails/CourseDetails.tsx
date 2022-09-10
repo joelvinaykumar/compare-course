@@ -1,24 +1,13 @@
-import React, { useEffect } from "react"
-import { useParams } from "react-router-dom"
+import React from "react"
 import styled from "styled-components"
-import { Row, Col, Typography } from "antd"
+import { Row } from "antd"
 
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { getCompanyByIdAsync, selectCompany } from "../Admin/companySlice";
 
 type CourseDetailsProps = {
 
 }
 
 const CourseDetails: React.FC<CourseDetailsProps> = () => {
-
-  const { id } = useParams()
-  const dispatch = useAppDispatch()
-  const { instituteDetails, status, error } = useAppSelector(selectCompany)
-
-  useEffect(() => {
-    dispatch(getCompanyByIdAsync(String(id)))
-  }, [])
 
   return (
     <Row justify="center">

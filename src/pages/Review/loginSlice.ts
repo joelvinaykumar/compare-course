@@ -31,8 +31,7 @@ export const loginAsync = createAsyncThunk(
             JSON.stringify(user.data)
           );
           window.location.reload()
-        })      
-      data.onClose()
+        })
     } catch (error) {
       return rejectWithValue(error);
     }

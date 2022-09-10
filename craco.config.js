@@ -8,8 +8,8 @@ module.exports = {
         lessLoaderOptions: {
           lessOptions: {
             modifyVars: {
-              '@theme': 'dark',
-              '@primary-color': '#1D3354',
+              '@theme': 'light',
+              '@primary-color': 'rgba(56, 103, 214,1.0)',
               '@secondary-color': '#6DAEDB',
               '@border-radius-base': '8px',
               '@checkbox-border-radius': '2px',

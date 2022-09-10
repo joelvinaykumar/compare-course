@@ -3,7 +3,6 @@ import {
   Row,
   Col,
   Input,
-  List,
   Space,
   Slider,
   Typography,
@@ -13,10 +12,8 @@ import {
   Card,
 } from "antd";
 import {
-  LikeFilled,
   EyeFilled,
   SearchOutlined,
-  StarFilled,
   DeleteOutlined,
 } from "@ant-design/icons";
 import styled from "styled-components";
@@ -31,14 +28,13 @@ type CoursesProps = {};
 const Courses: React.FC<CoursesProps> = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate()
-  const { courseData, status } = useAppSelector(selectCourse);
+  const { courseData } = useAppSelector(selectCourse);
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [rating, setRating] = useState<number>(5);
   const [classTypes, setClassTypes] = useState<string[]>([]);
   const [courseTypes, setCourseTypes] = useState<string[]>([]);
   const [categoryTypes, setCategoryTypes] = useState<string[]>([]);
-  const loading = status === "loading";
 
   const classTypeOptions = ["Online", "Offline", "Hybrid"];
 
@@ -68,13 +64,6 @@ const Courses: React.FC<CoursesProps> = () => {
     setCourseTypes([]);
     setCategoryTypes([]);
   };
-
-  const IconText = ({ icon, text, key, color }: any) => (
-    <Space>
-      {React.createElement(icon, { style: { color } })}
-      {text}
-    </Space>
-  );
 
   useEffect(() => {
     dispatch(getCoursesAsync());
@@ -136,7 +125,7 @@ const Courses: React.FC<CoursesProps> = () => {
               <StyledTag
                 key={tag}
                 closable
-                onClose={(e) => {
+                onClose={() => {
                   setClassTypes(classTypes.filter((c) => c !== tag));
                 }}
               >
@@ -147,7 +136,7 @@ const Courses: React.FC<CoursesProps> = () => {
               <StyledTag
                 key={tag}
                 closable
-                onClose={(e) => {
+                onClose={() => {
                   setCourseTypes(courseTypes.filter((c) => c !== tag));
                 }}
               >
@@ -158,7 +147,7 @@ const Courses: React.FC<CoursesProps> = () => {
               <StyledTag
                 key={tag}
                 closable
-                onClose={(e) => {
+                onClose={() => {
                   setCategoryTypes(categoryTypes.filter((c) => c !== tag));
                 }}
               >

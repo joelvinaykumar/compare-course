@@ -2,7 +2,7 @@ import React from "react"
 import { Result, Button  } from "antd"
 
 import { useAppDispatch } from "../redux/hooks";
-import { logOutAsync } from "../components/AddReview/loginSlice"
+import { logOutAsync } from "./Review/loginSlice"
 
 
 type NotFoundProps = {

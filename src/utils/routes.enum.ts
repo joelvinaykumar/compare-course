@@ -7,5 +7,6 @@ export enum ROUTES {
   COMPANY_BY_ID = "company/:id",
   COURSE_BY_ID = "courses/:id",
   COURSE = "course",
+  REVIEW = "review",
   UNAUTHORIZED = "unauthorized",
 }

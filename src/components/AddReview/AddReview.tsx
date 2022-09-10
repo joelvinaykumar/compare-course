@@ -4,7 +4,7 @@ import { Modal, Button, Input, Form } from "antd";
 
 import LoginSvg from "../../assets/login.svg";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { loginAsync, selectLogin } from "./loginSlice";
+import { loginAsync, selectLogin } from "../../pages/Review/loginSlice";
 
 type LoginProps = {
   open: boolean;
@@ -39,6 +39,7 @@ const Login: React.FC<LoginProps> = ({ open, onClose }) => {
         <img
           alt="login"
           src={LoginSvg}
+          loading="lazy"
           width={200}
           style={{
             marginBottom: 10,
