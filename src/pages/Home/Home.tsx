@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Input, Typography, Row, Col, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 
-import { SuperAdmin } from "../../pages";
+import { SuperAdmin, Admin } from "../../pages";
 import { CarouselCard } from "../../components";
 import { currentUser, USER_ROLES } from "../../utils/constants";
 
@@ -14,6 +14,10 @@ const Home: React.FC<HomeProps> = () => {
 
   if (currentUser?.role === USER_ROLES.SUPER_ADMIN) {
     return <SuperAdmin />;
+  }
+
+  if (currentUser?.role === USER_ROLES.ADMIN) {
+    return <Admin />;
   }
 
   return (

@@ -12,7 +12,7 @@ import {
   Typography} from "antd";
 import { PlusCircleFilled, EditFilled, DeleteFilled } from "@ant-design/icons";
 
-import AddCourseForm from "./AddCourseForm";
+import AddCourseForm from "./CourseForm";
 import {
   deleteCourseAsync,
   getCoursesAsync,

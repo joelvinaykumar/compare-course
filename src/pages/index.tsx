@@ -1,6 +1,7 @@
+import Home from "./Home";
+import Login from "./Login";
 import Admin from "./Admin";
 import Courses from "./Courses";
-import Home from "./Home";
 import CourseDetails from "./CourseDetails";
 import NotFound from "./NotFound";
 import Unauthorized from "./Unauthorized";
@@ -9,6 +10,7 @@ import Review from "./Review";
 
 export {
   Home,
+  Login,
   Courses,
   NotFound,
   Admin,

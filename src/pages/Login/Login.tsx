@@ -1,11 +1,15 @@
 /* eslint-disable no-template-curly-in-string */
-import React from "react"
+import React, { useContext, useEffect } from "react"
 import styled from "styled-components";
 import { Typography, Button, Row, Divider, Form, Input, Space } from "antd"
+import { EyeTwoTone, EyeInvisibleOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
 
-import { CustomButton } from "../../../components"
-import { loginAsync } from "../loginSlice";
-import { useAppDispatch } from "../../../redux/hooks";
+import { CustomButton } from "../../components"
+import { loginAsync, selectLogin } from "./loginSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import AuthContext from "../../utils/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../utils/routes.enum";
 
 type LoginProps = {
 
@@ -14,6 +18,14 @@ type LoginProps = {
 const Login: React.FC<LoginProps> = () => {
 
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  const { status } = useAppSelector(selectLogin)
+  const { authenticated } = useContext(AuthContext)
+  const loading = status === 'loading'
+
+  useEffect(() => {
+    if(authenticated) navigate(ROUTES.HOME)
+  }, [authenticated, navigate])
 
   const handleLogin = (values: any) => dispatch(loginAsync({ ...values }))
   
@@ -22,21 +34,21 @@ const Login: React.FC<LoginProps> = () => {
       <LeftCover />
       <RightArea>
         <StyledRow justify="space-between">
-          <Typography.Text>
+          <Typography.Title level={4}>
             Hello, welcome to EvaluatR!
-            <br />
-            <Typography.Text type="secondary">Please login here</Typography.Text>
-          </Typography.Text>
+          </Typography.Title>
+          <br />
+          <Typography.Text type="secondary">Please login here using</Typography.Text>
           <ButtonRow justify="space-between">
-            <StyledButton>
+            <StyledButton shape="round">
               <Space>
-                <img alt="google login" src={require("../../../assets/Google_Logo.png")} width={15} />
+                <img alt="google login" src={require("../../assets/Google_Logo.png")} width={15} />
                 <Typography.Text>Google</Typography.Text>
               </Space>
             </StyledButton>
-            <StyledButton>
+            <StyledButton shape="round">
               <Space>
-                <img alt="google login" src={require("../../../assets/office-365.png")} width={20} />
+                <img alt="google login" src={require("../../assets/office-365.png")} width={20} />
                 <Typography.Text>Microsoft</Typography.Text>
               </Space>
             </StyledButton>
@@ -60,13 +72,19 @@ const Login: React.FC<LoginProps> = () => {
           onFinish={handleLogin}
         >
           <Form.Item name="email" rules={[{ type: "email", required: true }]}>
-            <StyledInput placeholder="Email" />
+            <StyledInput placeholder="Email" prefix={<MailOutlined />} />
           </Form.Item>
           <Form.Item name="password" rules={[{ required: true }]}>
-            <StyledInput type="password" placeholder="Password" />
+            <StyledInput.Password
+              placeholder="Password"
+              prefix={<LockOutlined />}
+              iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+            />
           </Form.Item>
           <Form.Item>
-            <CustomButton htmlType="submit" type="primary">Login</CustomButton>
+            <CustomButton block htmlType="submit" type="primary" loading={loading}>
+              Login
+            </CustomButton>
           </Form.Item>
         </Form>
         </StyledRow>
@@ -89,7 +107,7 @@ const Container = styled.div`
 const LeftCover = styled.div`
   width: 60%;
   height: 100%;
-  background-image: url(${require("../../../assets/peter-chirkov.jpeg")});
+  background-image: url(${require("../../assets/peter-chirkov.jpeg")});
   background-size: cover;
 `
 
@@ -103,7 +121,7 @@ const RightArea = styled.div`
 `
 
 const StyledRow = styled(Row)`
-  width: 55%;
+  width: 60%;
   margin-top: 15px;
 `
 
@@ -112,7 +130,6 @@ const ButtonRow = styled(Row)`
 `
 
 const StyledButton = styled(Button)`
-  border-radius: 20px;
   min-width: 130px;
   margin-top: 20px;
 `

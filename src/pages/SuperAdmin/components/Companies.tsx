@@ -169,6 +169,7 @@ const Companies: React.FC<CompaniesProps> = () => {
       <StyledTable
         columns={columns}
         dataSource={instituteData}
+        rowKey={(row: any) => row?._id}
         pagination={false}
       />
       {openForm && (

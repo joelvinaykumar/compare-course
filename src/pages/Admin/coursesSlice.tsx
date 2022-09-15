@@ -33,7 +33,7 @@ export const getCoursesAsync = createAsyncThunk(
   "admin/getCourses",
   async (_, { rejectWithValue }) => {
     try {
-      return await API.get("/course");
+      return (await API.get("/course")).data;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -44,7 +44,7 @@ export const getCourseByIdAsync = createAsyncThunk(
   "admin/getCourseById",
   async (id: string, { rejectWithValue }) => {
     try {
-      return await API.get(`/course/${id}`);
+      return (await API.get(`/course/${id}`)).data;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -55,7 +55,7 @@ export const updateCourseAsync = createAsyncThunk(
   "admin/updateCourse",
   async ({ id, input }: { id: string; input: any }, { rejectWithValue }) => {
     try {
-      return await API.patch(`/course/${id}`, input);
+      return (await API.patch(`/course/${id}`, input)).data;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -102,7 +102,7 @@ export const courseSlice = createSlice({
       .addCase(getCoursesAsync.fulfilled, (state, action) => {
         state.status = "idle";
         // @ts-ignore
-        state.courseData = new Array(10).fill(...action.payload);
+        state.courseData = action.payload;
       })
       .addCase(getCoursesAsync.rejected, (state, action: any) => {
         state.status = "failed";
@@ -133,6 +133,7 @@ export const courseSlice = createSlice({
       })
       .addCase(updateCourseAsync.fulfilled, (state, action) => {
         state.status = "idle";
+        state.courseDetails = action.payload
         notification.success({ message: "Updated Course successfully!" });
       })
       .addCase(updateCourseAsync.rejected, (state, action: any) => {

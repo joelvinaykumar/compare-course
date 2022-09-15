@@ -1,27 +1,31 @@
-import React, { useEffect } from "react";
-import { Card, Avatar, Row, Col, Typography, Tabs, Button } from "antd";
-import { useNavigate, useParams } from "react-router-dom";
-import Quill from "react-quill"; 
+import React, { useEffect, useState } from "react";
+import { Card, Avatar, Row, Col, Typography, Tabs } from "antd";
+import { useParams } from "react-router-dom";
+import Quill from "react-quill";
 import styled from "styled-components";
 
 import { getCompanyByIdAsync, selectCompany } from "../companySlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import theme from "../../../utils/theme";
-import { CourseCard } from "../../../components";
-import { ROUTES } from "../../../utils/routes.enum";
+import { CourseCard, CustomButton } from "../../../components";
+import { CourseForm } from "../../Admin/components";
+import { getCoursesAsync, selectCourse } from "../../Admin/coursesSlice";
 
 type CompanyDetailsProps = {};
 
 const CompanyDetails: React.FC<CompanyDetailsProps> = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
   const { instituteDetails } = useAppSelector(selectCompany);
+  const { courseData } = useAppSelector(selectCourse);
 
-  const handleGoBack = () => navigate(`../${ROUTES.HOME}`)
+  const [courseFormVisible, setCourseFormVisible] = useState(false);
+  const openCourseForm = () => setCourseFormVisible(true);
+  const closeCourseForm = () => setCourseFormVisible(false);
 
   useEffect(() => {
     dispatch(getCompanyByIdAsync(String(id)));
+    dispatch(getCoursesAsync());
   }, [dispatch, id]);
 
   return (
@@ -50,7 +54,8 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = () => {
                   {instituteDetails?.name &&
                     instituteDetails?.name
                       ?.split(" ")
-                      ?.map((s: string) => s?.[0]).join("")}
+                      ?.map((s: string) => s?.[0])
+                      .join("")}
                 </StyledAvatar>
               )
             }
@@ -62,29 +67,47 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = () => {
                 {instituteDetails?.name}
               </Typography.Title>
             </Col>
-            <Col>
-              <Button type="text" onClick={handleGoBack}>Go Back to list</Button>
-            </Col>
           </Row>
-          <Tabs size="large">
+          <Tabs
+            size="large"
+            tabBarExtraContent={{
+              right: (
+                <CustomButton type="primary" onClick={openCourseForm}>
+                  Add a course
+                </CustomButton>
+              ),
+            }}
+          >
             <Tabs.TabPane tab="About" key="about">
               <About>
                 <Quill
                   readOnly
-                  value={instituteDetails?.about}  
+                  value={instituteDetails?.about}
                   theme="bubble"
                 />
               </About>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Courses" key="courses" active>
-              <CourseCard />
+              <StyledRow gutter={[24, 32]}>
+                {courseData.map((course: any) => (
+                  <StyledCol span={6}>
+                    <CourseCard
+                      id={course?._id}
+                      title={course.title}
+                      tags={[course.class_type, course.type, course.mode]}
+                      ratings={course?.ratings?.length}
+                    />
+                  </StyledCol>
+                ))}
+              </StyledRow>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="Reviews" key="reviews">
-
-            </Tabs.TabPane>
+            <Tabs.TabPane tab="Reviews" key="reviews"></Tabs.TabPane>
           </Tabs>
         </Card>
       </CompanyInfoCard>
+      {courseFormVisible && (
+        <CourseForm open={courseFormVisible} onClose={closeCourseForm} />
+      )}
     </Container>
   );
 };
@@ -114,4 +137,13 @@ const StyledAvatar = styled(Avatar)`
 
 const About = styled.div`
   width: 70%;
-`
+`;
+
+const StyledRow = styled(Row)`
+  padding: 30px 0;
+`;
+
+const StyledCol = styled(Col)`
+  display: flex;
+  justify-content: center;
+`;

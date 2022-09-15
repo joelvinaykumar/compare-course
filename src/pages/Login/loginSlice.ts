@@ -30,7 +30,7 @@ export const loginAsync = createAsyncThunk(
             USER_KEY_CONSTANT,
             JSON.stringify(user.data)
           );
-          window.location.reload()
+          window.location.href = "/"
         })
     } catch (error) {
       return rejectWithValue(error);

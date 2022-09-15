@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Menu,
@@ -16,10 +16,9 @@ import {
 } from "@ant-design/icons";
 import styled from "styled-components";
 
-import { AddReview } from "..";
 import { ROUTES } from "../../utils/routes.enum";
 import { currentUser, RoleLabel, USER_ROLES } from "../../utils/constants";
-import { logOutAsync } from "../../pages/Review/loginSlice";
+import { logOutAsync } from "../../pages/Login/loginSlice";
 import { useAppDispatch } from "../../redux/hooks";
 
 type NavbarProps = {};
@@ -30,8 +29,6 @@ const Navbar: React.FC<NavbarProps> = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const currentRoute = location.pathname.split('/').pop();
-
-  const [openLogin, setOpenLogin] = useState(false);
 
   const getRoutes = () => {
     const routes = [
@@ -59,14 +56,9 @@ const Navbar: React.FC<NavbarProps> = () => {
         ];
       case USER_ROLES.ADMIN:
         return [
-          ...routes,
           {
             title: "Dashboard",
-            route: ROUTES.ADMIN,
-          },
-          {
-            title: "Courses",
-            route: ROUTES.COURSES,
+            route: "/",
           },
           {
             title: "Company Profile",
@@ -139,8 +131,7 @@ const Navbar: React.FC<NavbarProps> = () => {
         {getRoutes()?.map((route, index) => (
           <Menu.Item
             key={index + 1}
-            defaultChecked
-            defaultValue={"Home"}
+            defaultValue={"1"}
             onClick={routeTo(route.route)}
           >
             {route.children ? (
@@ -171,9 +162,6 @@ const Navbar: React.FC<NavbarProps> = () => {
           {currentUser?.name ? ProfileMenu : null}
         </Space>
       </RightMenu>
-      {openLogin && (
-        <AddReview open={openLogin} onClose={() => setOpenLogin(false)} />
-      )}
     </StyledHeader>
   );
 };
@@ -212,6 +200,7 @@ const ProfileName = styled.div`
   display: flex;
   flex-direction: column;
   backgroun-color: red;
+  text-align: left;
 `;
 
 

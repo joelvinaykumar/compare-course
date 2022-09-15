@@ -3,7 +3,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import company from '../pages/SuperAdmin/companySlice';
 import course from '../pages/Admin/coursesSlice';
 import courseDetails from '../pages/CourseDetails/CourseDetails.slice';
-import login from '../pages/Review/loginSlice';
+import login from '../pages/Login/loginSlice';
 
 export const store = configureStore({
   reducer: {

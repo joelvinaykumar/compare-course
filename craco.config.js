@@ -14,6 +14,7 @@ module.exports = {
               '@border-radius-base': '8px',
               '@checkbox-border-radius': '2px',
               '@card-radius': '10px',
+              '@rate-star-bg': '#95a5a6',
               '@rate-star-size': '15px',
               '@font-family': 'Euclid Circular A Regular'
             },
