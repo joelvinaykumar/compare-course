@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Card, Avatar, Row, Col, Typography, Tabs } from "antd";
+import { Card, Avatar, Row, Col, Typography, Tabs, Empty } from "antd";
+import { EditFilled } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import Quill from "react-quill";
 import styled from "styled-components";
@@ -10,6 +11,8 @@ import theme from "../../../utils/theme";
 import { CourseCard, CustomButton } from "../../../components";
 import { CourseForm } from "../../Admin/components";
 import { getCoursesAsync, selectCourse } from "../../Admin/coursesSlice";
+import { currentUser, USER_ROLES } from "../../../utils/constants";
+import CompanyForm from "./CompanyForm";
 
 type CompanyDetailsProps = {};
 
@@ -19,9 +22,12 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = () => {
   const { instituteDetails } = useAppSelector(selectCompany);
   const { courseData } = useAppSelector(selectCourse);
 
-  const [courseFormVisible, setCourseFormVisible] = useState(false);
+  const [courseFormVisible, setCourseFormVisible] = useState<boolean>(false);
+  const [companyFormVisible, setCompanyFormVisible] = useState<boolean>(false);
   const openCourseForm = () => setCourseFormVisible(true);
   const closeCourseForm = () => setCourseFormVisible(false);
+  const openCompanyForm = () => setCompanyFormVisible(true);
+  const closeCompanyForm = () => setCompanyFormVisible(false);
 
   useEffect(() => {
     dispatch(getCompanyByIdAsync(String(id)));
@@ -65,13 +71,14 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = () => {
             <Col span={19}>
               <Typography.Title level={3}>
                 {instituteDetails?.name}
+                <EditIcon onClick={openCompanyForm} />
               </Typography.Title>
             </Col>
           </Row>
           <Tabs
             size="large"
             tabBarExtraContent={{
-              right: (
+              right: currentUser?.role === USER_ROLES.ADMIN && (
                 <CustomButton type="primary" onClick={openCourseForm}>
                   Add a course
                 </CustomButton>
@@ -88,25 +95,31 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = () => {
               </About>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Courses" key="courses" active>
-              <StyledRow gutter={[24, 32]}>
+              <StyledRow gutter={[40, 24]}>
                 {courseData.map((course: any) => (
-                  <StyledCol span={6}>
+                  <Col span={6}>
                     <CourseCard
                       id={course?._id}
+                      createdAt={course?.createdAt}
                       title={course.title}
                       tags={[course.class_type, course.type, course.mode]}
                       ratings={course?.ratings?.length}
                     />
-                  </StyledCol>
+                  </Col>
                 ))}
               </StyledRow>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="Reviews" key="reviews"></Tabs.TabPane>
+            <Tabs.TabPane tab="Reviews" key="reviews">
+              <Empty description="No reviews at this time."/>
+            </Tabs.TabPane>
           </Tabs>
         </Card>
       </CompanyInfoCard>
       {courseFormVisible && (
         <CourseForm open={courseFormVisible} onClose={closeCourseForm} />
+      )}
+      {companyFormVisible && (
+        <CompanyForm data={instituteDetails} open={companyFormVisible} onClose={closeCompanyForm} />
       )}
     </Container>
   );
@@ -143,7 +156,7 @@ const StyledRow = styled(Row)`
   padding: 30px 0;
 `;
 
-const StyledCol = styled(Col)`
-  display: flex;
-  justify-content: center;
-`;
+const EditIcon = styled(EditFilled)`
+  margin-left: 10px;
+  font-size: 18px;
+`

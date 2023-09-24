@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom"
 import {
   Row,
   Table,
@@ -12,7 +11,7 @@ import {
   Tooltip,
   Tag,
 } from "antd";
-import { PlusCircleFilled, EditFilled, DeleteFilled, EyeFilled } from "@ant-design/icons";
+import { PlusCircleFilled, EditFilled, DeleteFilled } from "@ant-design/icons";
 
 import CompanyForm from "./CompanyForm";
 import {
@@ -24,14 +23,12 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import theme from "../../../utils/theme";
 import { tagColors } from "../../../utils/constants";
 import { CustomButton } from "../../../components";
-import { ROUTES } from "../../../utils/routes.enum";
 
 type CompaniesProps = {};
 
 const Companies: React.FC<CompaniesProps> = () => {
 
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
   const { instituteData, status } = useAppSelector(selectCompany);
   const loading = status === "loading"
   const [openForm, setOpenForm] = useState<boolean>(false);
@@ -44,15 +41,10 @@ const Companies: React.FC<CompaniesProps> = () => {
   const closeForm = () => setOpenForm(false);
   const handleDelete = async (id: string) => {
     await dispatch(deleteCompanyAsync(id))
-    dispatch(getCompaniesAsync())
+    dispatch(getCompaniesAsync({}))
   }
 
   const rowActions = [
-    {
-      icon: <EyeFilled />,
-      onclick: (record: any) => navigate(`../${ROUTES.COMPANY}/${record._id}`, { replace: true }),
-      label: "Preview"
-    },
     {
       icon: <EditFilled />,
       onclick: (record: any) => {
@@ -94,6 +86,28 @@ const Companies: React.FC<CompaniesProps> = () => {
           {data?.map((m: string, i: number) => <StyledTag color={tagColors[i]}>{m}</StyledTag>)}
         </Space>
       )
+    },
+    {
+      title: "Administrators",
+      dataIndex: "admin",
+      key: "faculty",
+      render: (data: any) => (
+        <Avatar.Group
+          maxCount={3}
+        >
+          {data.map((member: any) => (
+            <Tooltip title={member?.name} placement="top">
+              {member?.picture ? (
+                <StyledAvatar src={member?.picture} color={theme.secondary} />
+              ): (
+                <StyledAvatar color={theme.secondary}>
+                  {member?.name[0]}
+                </StyledAvatar>
+              )}
+            </Tooltip>
+          ))}
+        </Avatar.Group>
+      ),
     },
     {
       title: "Faculty",
@@ -147,7 +161,7 @@ const Companies: React.FC<CompaniesProps> = () => {
   ];
 
   useEffect(() => {
-    dispatch(getCompaniesAsync());
+    dispatch(getCompaniesAsync({}));
   }, [dispatch]);
 
   return (

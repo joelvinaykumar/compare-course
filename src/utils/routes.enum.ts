@@ -1,6 +1,7 @@
 export enum ROUTES {
   HOME = "",
-  LOGIN = "/login",
+  LOGIN = "login",
+  AUTH_CALLBACK = "auth/callback",
   COURSES = "courses",
   SUPERADMIN = "superadmin",
   ADMIN = "admin",
@@ -10,4 +11,5 @@ export enum ROUTES {
   COURSE = "course",
   REVIEW = "review",
   UNAUTHORIZED = "unauthorized",
+  PROFILE = "me",
 }

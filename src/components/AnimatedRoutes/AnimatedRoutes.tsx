@@ -11,10 +11,12 @@ import {
   NotFound,
   CourseDetails,
   Review,
+  AuthCallback,
   Unauthorized,
+  Profile,
 } from "../../pages";
 import { CompanyDetails } from "../../pages/SuperAdmin/components"
-import { AuthRole, AppSkeleton, PrivateRoute } from "..";
+import { AuthRole, AppSkeleton } from "..";
 import { ROUTES } from "../../utils/routes.enum";
 import { USER_ROLES } from "../../utils/constants";
 
@@ -27,15 +29,15 @@ const AnimatedRoutes: React.FC = () => {
         <Route path={ROUTES.HOME} element={<AppSkeleton />}>
           <Route path={ROUTES.HOME} element={<Home />} />
         </Route>
-        <Route path={ROUTES.HOME} element={<PrivateRoute />}>
+        <Route path={ROUTES.HOME}>
           <Route path={ROUTES.HOME} element={<AppSkeleton />}>
-            <Route element={<AuthRole allowedRoles={[USER_ROLES.USER]} />}>
-              <Route path={ROUTES.COURSES} element={<BestCourses />} />
-            </Route>
+            <Route path={ROUTES.COURSES} element={<BestCourses />} />
             <Route element={<AuthRole allowedRoles={[USER_ROLES.USER]} />}>
               <Route path={ROUTES.REVIEW} element={<Review />} />
             </Route>
+            <Route path={ROUTES.AUTH_CALLBACK} element={<AuthCallback />} />
             <Route path={ROUTES.COMPANY_BY_ID} element={<CompanyDetails />} />
+            <Route path={ROUTES.PROFILE} element={<Profile />} />
             <Route path={ROUTES.COURSE_BY_ID} element={<CourseDetails />} />
             <Route path={ROUTES.ADMIN} element={<Admin />} />
             <Route element={<AuthRole allowedRoles={[USER_ROLES.SUPER_ADMIN]} />}>

@@ -3,6 +3,7 @@ import { notification } from "antd";
 
 import { RootState } from "../../redux/store";
 import API from "../../utils/axios";
+import { USER_KEY_CONSTANT } from "../../utils/constants";
 
 export interface CourseState {
   courseData: any;
@@ -33,7 +34,8 @@ export const getCoursesAsync = createAsyncThunk(
   "admin/getCourses",
   async (_, { rejectWithValue }) => {
     try {
-      return (await API.get("/course")).data;
+      const currentUser = JSON.parse(localStorage.getItem(USER_KEY_CONSTANT) || "")
+      return (await API.get("/course", { params: { company: currentUser.organization._id } })).data;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -118,7 +120,6 @@ export const courseSlice = createSlice({
       .addCase(getCourseByIdAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.courseDetails = action.payload;
-        notification.success({ message: "Fetched Course details successfully!" });
       })
       .addCase(getCourseByIdAsync.rejected, (state, action: any) => {
         state.status = "failed";

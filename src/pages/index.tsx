@@ -7,6 +7,8 @@ import NotFound from "./NotFound";
 import Unauthorized from "./Unauthorized";
 import SuperAdmin from "./SuperAdmin";
 import Review from "./Review";
+import AuthCallback from "./AuthCallback";
+import Profile from "./Profile";
 
 export {
   Home,
@@ -18,4 +20,6 @@ export {
   Unauthorized,
   SuperAdmin,
   Review,
+  AuthCallback,
+  Profile
 }

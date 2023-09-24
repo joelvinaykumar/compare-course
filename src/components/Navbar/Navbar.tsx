@@ -28,24 +28,23 @@ const Navbar: React.FC<NavbarProps> = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const currentRoute = location.pathname.split('/').pop();
+  const currentRoute = location.pathname.split("/").pop();
+  const routes = [
+    { title: "Home", route: "/" },
+    {
+      title: "Courses",
+      route: "/courses",
+      children: [
+        { title: "Data Science Courses", route: ROUTES.COURSES },
+        { title: "Cloud Engineering Courses", route: ROUTES.COURSES },
+        { title: "Fullstack Development Courses", route: ROUTES.COURSES },
+        { title: "Devops Courses", route: ROUTES.COURSES },
+        { title: "Cyber Security Courses", route: ROUTES.COURSES },
+      ],
+    },
+  ];
 
   const getRoutes = () => {
-    const routes = [
-      { title: "Home", route: "/" },
-      {
-        title: "Courses",
-        route: null,
-        children: [
-          { title: "Data Science Courses", route: ROUTES.COURSES },
-          { title: "Cloud Engineering Courses", route: ROUTES.COURSES },
-          { title: "Fullstack Development Courses", route: ROUTES.COURSES },
-          { title: "Devops Courses", route: ROUTES.COURSES },
-          { title: "Cyber Security Courses", route: ROUTES.COURSES },
-        ],
-      },
-    ];
-
     switch (currentUser?.role) {
       case USER_ROLES.SUPER_ADMIN:
         return [
@@ -62,7 +61,7 @@ const Navbar: React.FC<NavbarProps> = () => {
           },
           {
             title: "Company Profile",
-            route: ROUTES.COMPANY_BY_ID,
+            route: `${ROUTES.COMPANY}/${currentUser.organization?._id}`,
           },
         ];
       case USER_ROLES.USER:
@@ -81,7 +80,7 @@ const Navbar: React.FC<NavbarProps> = () => {
     {
       title: "Profile",
       icon: <UserOutlined />,
-      onClick: () => dispatch(logOutAsync()),
+      onClick: () => navigate("/me"),
     },
     {
       title: "Logout",
@@ -94,6 +93,7 @@ const Navbar: React.FC<NavbarProps> = () => {
     <Dropdown
       arrow
       placement="bottom"
+      trigger={["click"]}
       overlay={
         <Menu>
           {profileMenuItems.map((item: any) => (
@@ -114,20 +114,22 @@ const Navbar: React.FC<NavbarProps> = () => {
           <ProfileName>
             <Typography.Text>Joel Vinay Kumar</Typography.Text>
             {/* @ts-ignore */}
-            <Typography.Text type="secondary">{RoleLabel[currentUser?.role]}</Typography.Text>
+            <Typography.Text type="secondary">
+              {/* @ts-ignore */}
+              {RoleLabel?.[currentUser?.role]}
+            </Typography.Text>
           </ProfileName>
           <ArrowDownIcon />
         </Space>
       </Button>
     </Dropdown>
   );
+  console.log(getRoutes());
 
   return (
-    <StyledHeader>
-      <LeftMenu theme="light" mode="horizontal" expandIcon>
-        <Menu.Item disabled>
-          <Logo src={require("../../assets/logo.png")} />
-        </Menu.Item>
+    <StyledHeader theme="light">
+      <Logo src={require("../../assets/logo.png")} onClick={routeTo("/")} />
+      <RightMenu mode="horizontal" theme="light" expandIcon>
         {getRoutes()?.map((route, index) => (
           <Menu.Item
             key={index + 1}
@@ -149,19 +151,22 @@ const Navbar: React.FC<NavbarProps> = () => {
             )}
           </Menu.Item>
         ))}
-      </LeftMenu>
-      <RightMenu>
-        <Space align="end" size={30}>
-          {![USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN].includes(
-            currentUser?.role
-          ) && currentRoute!==ROUTES.REVIEW && (
-            <StyledButton type="primary" onClick={routeTo(ROUTES.REVIEW)}>
-              Write a Review
-            </StyledButton>
-          )}
-          {currentUser?.name ? ProfileMenu : null}
-        </Space>
       </RightMenu>
+      <Space align="end" size={20}>
+        {![USER_ROLES.SUPER_ADMIN, USER_ROLES.ADMIN].includes(
+          currentUser?.role
+        ) && (
+          <StyledButton type="link" onClick={routeTo(ROUTES.REVIEW)}>
+            Write a Review
+          </StyledButton>
+        )}
+        {!currentUser && (
+          <StyledButton type="primary" onClick={routeTo(ROUTES.LOGIN)}>
+            Login
+          </StyledButton>
+        )}
+        {currentUser ? ProfileMenu : null}
+      </Space>
     </StyledHeader>
   );
 };
@@ -170,30 +175,27 @@ export default Navbar;
 
 const StyledHeader = styled(Header)`
   padding: 0;
+  padding-right: 20px;
   display: flex;
   position: fixed;
   width: 100%;
   left: 0;
   top: 0;
   z-index: 1000;
+  background-color: white;
 `;
 
 const Logo = styled.img`
-  width: 80px;
+  scale: 0.7;
+  cursor: pointer;
 `;
 
-const LeftMenu = styled(Menu)`
-  display: flex;
-  align-items: center;
-  width: 50%;
-`;
 
 const RightMenu = styled(Menu)`
   display: flex;
-  width: 50%;
+  width: 100%;
   justify-content: flex-end;
   align-items: center;
-  padding-right: 20px;
 `;
 
 const ProfileName = styled.div`
@@ -202,7 +204,6 @@ const ProfileName = styled.div`
   backgroun-color: red;
   text-align: left;
 `;
-
 
 const StyledButton = styled(Button)`
   filter: drop-shadow(1px 5px 12px rgba(29, 51, 84, 0.5));

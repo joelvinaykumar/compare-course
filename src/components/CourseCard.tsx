@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { Typography } from "antd";
+import { Typography, Badge } from "antd";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../utils/routes.enum";
+import Skeleton from "react-loading-skeleton"
 
+import { ROUTES } from "../utils/routes.enum";
 
 type CourseCardProps = {
   id:string,
@@ -11,6 +12,8 @@ type CourseCardProps = {
   tags: string[],
   ratings: number,
   cover?: string,
+  loading?: boolean,
+  createdAt: string,
 };
 
 const CourseCard: React.FC<CourseCardProps> = ({
@@ -18,6 +21,8 @@ const CourseCard: React.FC<CourseCardProps> = ({
   title,
   ratings,
   tags,
+  loading = false,
+  createdAt,
   cover = require("../assets/CardCover.png")
 }) => {
   const navigate = useNavigate()
@@ -30,13 +35,23 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
   const handleNavigate = () => navigate(`../../${ROUTES.COURSE}/${id}`)
 
+  const ribbonText = (new Date(createdAt).getDate() - new Date().getDate())? "New": null  
+
+  if(loading) {
+    return (
+      <Skeleton />
+    )
+  }
+
   return (
-    <CardContainer onClick={handleNavigate}>
-      {!!cover && <CoverImage src={cover} />}
-      <Title strong>{title}</Title>
-      <Views type="secondary">{Number(ratings)} reviwed this course</Views>
-      <Views>{renderTags()}</Views>
-    </CardContainer>
+    <Badge.Ribbon text={ribbonText}  >
+      <CardContainer onClick={handleNavigate}>
+        {!!cover && <CoverImage src={cover} />}
+        <Title strong>{title}</Title>
+        <Views type="secondary">{Number(ratings)} reviwed this course</Views>
+        <Views>{renderTags()}</Views>
+      </CardContainer>
+    </Badge.Ribbon>
   );
 };
 
@@ -45,7 +60,7 @@ export default CourseCard;
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 240px;
+  width: 100%;
   cursor: pointer;
 
   &:hover {
@@ -65,11 +80,11 @@ const CoverImage = styled.img`
 `;
 
 const Title = styled(Typography.Text)`
-  font-size: 12px;
+  font-size: 1.1em;
   padding: 2px;
 `;
 
 const Views = styled(Typography.Text)`
-  font-size: 11px;
+  font-size: 0.85em;
   padding: 2px;
 `;

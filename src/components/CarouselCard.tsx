@@ -32,7 +32,7 @@ const CardContainer = styled.div<{ imageSource: string }>`
 
   &:hover {
     transform: scale(1.1);
-    transition: all 0.3s ease;
+    transition: all 0.3s ease-out;
   }
 `
   
