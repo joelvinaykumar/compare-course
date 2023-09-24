@@ -9,7 +9,7 @@ import {
 import { AiFillLinkedin } from "react-icons/ai"
 
 import { CustomButton } from "../../components"
-import { loginAsync, selectLogin, signupAsync, loginLinkedInAsync } from "./loginSlice";
+import { loginAsync, selectLogin, signupAsync } from "./loginSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import AuthContext from "../../utils/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -41,7 +41,7 @@ const Login: React.FC<LoginProps> = () => {
 
   const handleLogin = (values: any) => dispatch(loginAsync({ ...values }))
   const handleSignup = (values: any) => dispatch(signupAsync({ ...values, role: USER_ROLES.USER }))
-  const handleLinkedInLogin = () => window.open("http://localhost:8080/api/v1/auth/linkedin", "_blank")
+  const handleLinkedInLogin = () => window.open(`${process.env.REACT_APP_API_HOST}/auth/linkedin`, "_blank")
   
   return (
     <Container>
