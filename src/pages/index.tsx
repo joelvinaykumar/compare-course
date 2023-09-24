@@ -1,15 +1,25 @@
+import Home from "./Home";
+import Login from "./Login";
 import Admin from "./Admin";
 import Courses from "./Courses";
-import Home from "./Home";
-import CompanyDetails from "./CompanyDetails";
 import CourseDetails from "./CourseDetails";
 import NotFound from "./NotFound";
+import Unauthorized from "./Unauthorized";
+import SuperAdmin from "./SuperAdmin";
+import Review from "./Review";
+import AuthCallback from "./AuthCallback";
+import Profile from "./Profile";
 
 export {
   Home,
+  Login,
   Courses,
   NotFound,
   Admin,
-  CompanyDetails as InstituteDetails,
   CourseDetails,
+  Unauthorized,
+  SuperAdmin,
+  Review,
+  AuthCallback,
+  Profile
 }

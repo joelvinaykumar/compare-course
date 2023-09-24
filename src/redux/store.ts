@@ -1,9 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 
-import company from '../pages/Admin/companySlice';
+import company from '../pages/SuperAdmin/companySlice';
 import course from '../pages/Admin/coursesSlice';
 import courseDetails from '../pages/CourseDetails/CourseDetails.slice';
-import login from '../components/AddReview/loginSlice';
+import login from '../pages/Login/loginSlice';
+import profile from '../pages/Profile/profile.slice';
+import review from '../pages/Review/Review.slice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +13,8 @@ export const store = configureStore({
     course,
     courseDetails,
     login,
+    profile,
+    review,
   },
 });
 

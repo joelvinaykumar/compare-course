@@ -3,20 +3,12 @@ import {
   Row,
   Col,
   Input,
-  List,
-  Space,
   Slider,
   Typography,
   Tag,
-  Avatar,
-  Tooltip,
-  Card,
 } from "antd";
 import {
-  LikeFilled,
-  EyeFilled,
   SearchOutlined,
-  StarFilled,
   DeleteOutlined,
 } from "@ant-design/icons";
 import styled from "styled-components";
@@ -24,21 +16,20 @@ import styled from "styled-components";
 import FilterBox from "./components";
 import { selectCourse, getCoursesAsync } from "../Admin/coursesSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { useNavigate } from "react-router-dom";
+import { CourseCard } from "../../components";
 
 type CoursesProps = {};
 
 const Courses: React.FC<CoursesProps> = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
   const { courseData, status } = useAppSelector(selectCourse);
+  const loading = status === "loading"
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [rating, setRating] = useState<number>(5);
   const [classTypes, setClassTypes] = useState<string[]>([]);
   const [courseTypes, setCourseTypes] = useState<string[]>([]);
   const [categoryTypes, setCategoryTypes] = useState<string[]>([]);
-  const loading = status === "loading";
 
   const classTypeOptions = ["Online", "Offline", "Hybrid"];
 
@@ -68,13 +59,6 @@ const Courses: React.FC<CoursesProps> = () => {
     setCourseTypes([]);
     setCategoryTypes([]);
   };
-
-  const IconText = ({ icon, text, key, color }: any) => (
-    <Space>
-      {React.createElement(icon, { style: { color } })}
-      {text}
-    </Space>
-  );
 
   useEffect(() => {
     dispatch(getCoursesAsync());
@@ -136,7 +120,7 @@ const Courses: React.FC<CoursesProps> = () => {
               <StyledTag
                 key={tag}
                 closable
-                onClose={(e) => {
+                onClose={() => {
                   setClassTypes(classTypes.filter((c) => c !== tag));
                 }}
               >
@@ -147,7 +131,7 @@ const Courses: React.FC<CoursesProps> = () => {
               <StyledTag
                 key={tag}
                 closable
-                onClose={(e) => {
+                onClose={() => {
                   setCourseTypes(courseTypes.filter((c) => c !== tag));
                 }}
               >
@@ -158,7 +142,7 @@ const Courses: React.FC<CoursesProps> = () => {
               <StyledTag
                 key={tag}
                 closable
-                onClose={(e) => {
+                onClose={() => {
                   setCategoryTypes(categoryTypes.filter((c) => c !== tag));
                 }}
               >
@@ -169,39 +153,16 @@ const Courses: React.FC<CoursesProps> = () => {
         )}
         <Row gutter={[40, 24]}>
           {courseData.map((item: any) => (
-            <Col span={8}>
-              <Card
-                hoverable
-                cover={<CardCover />}
-                actions={[
-                  <EyeFilled onClick={() => navigate("abcd")} />
-                ]}
-              >
-                <Card.Meta
-                  title={
-                    <Space direction="vertical">
-                      <Typography.Text strong>{item.title}</Typography.Text>
-                      <Avatar.Group size="small" maxCount={3}>
-                        <Tooltip title="Aziz Nasser">
-                          <Avatar size="small" />
-                        </Tooltip>
-                        <Avatar size="small" />
-                        <Avatar size="small" />
-                        <Avatar size="small" />
-                        <Avatar size="small" />
-                      </Avatar.Group>
-                    </Space>
-                  }
-                  description={
-                    <Typography.Paragraph
-                      type="secondary"
-                      ellipsis={{ rows: 2 }}
-                    >
-                      {item.description}
-                    </Typography.Paragraph>
-                  }
-                />
-              </Card>
+            <Col span={6}>
+              <CourseCard
+                id={item?._id}
+                loading={loading}
+                createdAt={item?.createdAt}
+                title={item?.title}
+                ratings={item?.ratings?.length}
+                tags={[item?.type, item?.class_type, item?.mode]}
+                key={item?._id}
+              />
             </Col>
           ))}
         </Row>
@@ -256,17 +217,3 @@ const StyledTag = styled(Tag)`
   color: #1b263b;
   filter: drop-shadow(1px 1px 10px rgba(205, 218, 253, 1));
 `;
-
-const CardCover = styled.div`
-  background-image: url("https://img-b.udemycdn.com/course/480x270/17782_50e2_14.jpg");
-  background-size: cover;
-  height: 150px;
-  border-radius: 10px;
-  transition: all 250ms ease-out;
-  display: hidden;
-  
-  &:hover {
-    display: visible;
-    box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.5);
-  }
-`

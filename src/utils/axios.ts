@@ -1,6 +1,7 @@
 import axios from "axios"
 import { notification } from "antd"
-import { STORAGE_KEY_CONSTANT } from "./constants";
+import { STORAGE_KEY_CONSTANT, USER_KEY_CONSTANT } from "./constants";
+import { ROUTES } from "./routes.enum";
 
 const instance =  axios.create({
   baseURL: process.env.REACT_APP_API_HOST,
@@ -15,6 +16,9 @@ instance.interceptors.response.use(
   (error) => {
     if(error.response.status === 401 || error.response.status === 403) {
       // logout
+      localStorage.removeItem(USER_KEY_CONSTANT)
+      localStorage.removeItem(STORAGE_KEY_CONSTANT)
+      window.location.href = ROUTES.LOGIN
     }
     if(error.response.status === 400) {
       const e = error.response.data.message

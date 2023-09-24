@@ -9,12 +9,10 @@ import {
   Space,
   Popconfirm,
   Tooltip,
-  Typography,
-  TableColumnsType
-} from "antd";
+  Typography} from "antd";
 import { PlusCircleFilled, EditFilled, DeleteFilled } from "@ant-design/icons";
 
-import AddCourseForm from "./AddCourseForm";
+import AddCourseForm from "./CourseForm";
 import {
   deleteCourseAsync,
   getCoursesAsync,
@@ -139,7 +137,7 @@ const Courses: React.FC<CoursesProps> = () => {
 
   useEffect(() => {
     dispatch(getCoursesAsync());
-  }, []);
+  }, [dispatch]);
 
   return (
     <Container>

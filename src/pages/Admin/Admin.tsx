@@ -1,76 +1,70 @@
 import React from "react";
 import styled from "styled-components";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Layout, Menu, Typography } from "antd";
-import { BankTwoTone, BookTwoTone, HomeTwoTone } from "@ant-design/icons";
+import { Statistic, Row, Card, PageHeader, Col, Typography } from "antd";
+import { TinyArea } from "@ant-design/plots";
+import { Datum } from "@antv/g2plot";
 
-import theme from "../../utils/theme";
-import { ROUTES } from "../../utils/routes.enum";
 
 type AdminProps = {};
 
-const { Sider, Content } = Layout;
-
 const Admin: React.FC<AdminProps> = () => {
-  const navigate = useNavigate();
-  const location = useLocation()
 
-  const menuItems = [
-    {
-      label: "Home",
-      route: ROUTES.HOME,
-      icon: <HomeTwoTone twoToneColor={theme.primary} />,
-    },
-    {
-      label: "Company",
-      route: ROUTES.COMPANY,
-      icon: <BankTwoTone twoToneColor={theme.primary} />,
-    },
-    {
-      label: "Courses",
-      route: ROUTES.COURSE,
-      icon: <BookTwoTone twoToneColor={theme.primary} />,
-    },
+  const data = [
+    264, 417, 438, 887, 309, 397, 550, 575, 563, 430, 525, 592, 492, 467, 513,
+    546, 983, 340, 539, 243, 226, 192,
   ];
-
-  const currentMenuItem = () => {
-    if (location.pathname === "/admin") {
-      return [menuItems[0]?.label];
-    }
-    const path = location.pathname.substring(7, location.pathname.length);
-    console.log(path)
-    return [menuItems.filter((menu) => menu.route === path)[0]?.label];
+  const config = {
+    height: 200,
+    autoFit: false,
+    data,
+    smooth: true,
   };
 
   return (
     <Container>
-      <Layout hasSider>
-        <Sider
-          theme="light"
-          style={{
-            overflow: "auto",
-            height: "100vh",
-            position: "fixed",
-            left: 0,
-            top: 0,
-            bottom: 0,
-            padding: "80px 0",
-          }}
-        >
-          <Menu defaultSelectedKeys={currentMenuItem()}>
-            {menuItems.map((item) => (
-              <Menu.Item key={item.label} icon={item.icon}>
-                <Typography.Text onClick={() => navigate(item.route)}>
-                  {item.label}
-                </Typography.Text>
-              </Menu.Item>
-            ))}
-          </Menu>
-        </Sider>
-      </Layout>
-      <StyledContent style={{ margin: 0 }}>
-        <Outlet />
-      </StyledContent>
+      <PageHeader title="Dashboard" />
+      <Row gutter={[32, 16]}>
+        <Col span={24}>
+          <Card>
+            <Row>
+              <StyledCol span={6}>
+                <Statistic title="All Courses" value={2} />
+              </StyledCol>
+              <StyledCol span={6}>
+                <Statistic title="Total Reviews" value={"2.4k"} />
+              </StyledCol>
+              <StyledCol span={6}>
+                <Statistic title="Positive Reviews" value={"1.9k"} />
+              </StyledCol>
+              <StyledCol span={6}>
+                <Statistic title="Negative Reviews" value={"0.5k"} />
+              </StyledCol>
+            </Row>
+          </Card>
+        </Col>
+        <Col span={24}>
+          <Card>
+            <TinyArea
+              {...config}
+              tooltip={{
+                follow: true,
+                customContent: (title: string, data: any[]) => {
+                  return (
+                    <Typography.Title level={4}>
+                      {data[0]?.value}
+                    </Typography.Title>
+                  );
+                },
+                formatter: (data: Datum) => {
+                  return { name: data.x, value: `${data.y} reviews` };
+                },
+              }}
+              useDeferredLabel
+              yAxis={{ field: "Reviews" }}
+            />
+          </Card>
+        </Col>
+      </Row>
     </Container>
   );
 };
@@ -79,13 +73,12 @@ export default Admin;
 
 const Container = styled.div`
   width: 100%;
-  padding: 50px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  min-height: 91vh;
+  margin-top: 80px;
+  padding: 30px;
 `;
 
-const StyledContent = styled(Content)`
-  margin: 0;
-  width: 75%;
+const StyledCol = styled(Col)`
+  display: flex;
+  justify-content: center;
 `;

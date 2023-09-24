@@ -1,18 +1,18 @@
 import React from "react"
 import { motion } from 'framer-motion';
 
-const AnimatedPage: React.FC = ({ children }) => {
+const AnimatedPage: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const animationStyles = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 },
+    initial: { height: "100%", opacity: 1 },
+    animate: { height: 0 },
+    exit: { y: -10, opacity: 0 },
   }
 
   return (
     <motion.div
       variants={animationStyles}
-      transition={{ ease: "circIn", duration: 0.25 }}
+      transition={{ ease: "circIn", duration: 0.3 }}
       initial="initial"
       animate="animate"
       exit="exit"

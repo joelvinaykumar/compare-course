@@ -11,10 +11,9 @@ import {
   Tooltip,
   Tag,
 } from "antd";
-import { useNavigate } from "react-router-dom";
-import { PlusCircleFilled, EditFilled, DeleteFilled, EyeFilled } from "@ant-design/icons";
+import { PlusCircleFilled, EditFilled, DeleteFilled } from "@ant-design/icons";
 
-import AddCompanyForm from "./AddCompanyForm";
+import CompanyForm from "./CompanyForm";
 import {
   deleteCompanyAsync,
   getCompaniesAsync,
@@ -22,14 +21,14 @@ import {
 } from "../companySlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import theme from "../../../utils/theme";
-import { ROUTES } from "../../../utils/routes.enum";
+import { tagColors } from "../../../utils/constants";
+import { CustomButton } from "../../../components";
 
 type CompaniesProps = {};
 
 const Companies: React.FC<CompaniesProps> = () => {
 
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
   const { instituteData, status } = useAppSelector(selectCompany);
   const loading = status === "loading"
   const [openForm, setOpenForm] = useState<boolean>(false);
@@ -42,15 +41,10 @@ const Companies: React.FC<CompaniesProps> = () => {
   const closeForm = () => setOpenForm(false);
   const handleDelete = async (id: string) => {
     await dispatch(deleteCompanyAsync(id))
-    dispatch(getCompaniesAsync())
+    dispatch(getCompaniesAsync({}))
   }
 
   const rowActions = [
-    {
-      icon: <EyeFilled />,
-      onclick: (record: any) => navigate(`${ROUTES.COMPANY}/${record._id}`, { replace: true }),
-      label: "Preview"
-    },
     {
       icon: <EditFilled />,
       onclick: (record: any) => {
@@ -79,12 +73,6 @@ const Companies: React.FC<CompaniesProps> = () => {
       key: "name",
     },
     {
-      title: "About",
-      dataIndex: "about",
-      key: "about",
-      ellipsis: true,
-    },
-    {
       title: "Type",
       dataIndex: "type",
       key: "type",
@@ -93,11 +81,33 @@ const Companies: React.FC<CompaniesProps> = () => {
       title: "Mode",
       dataIndex: "mode",
       key: "mode",
-      render: (data: any) => (
+      render: (data: any, _: any) => (
         <Space>
-          {data?.map((m: string) => <Tag>{m}</Tag>)}
+          {data?.map((m: string, i: number) => <StyledTag color={tagColors[i]}>{m}</StyledTag>)}
         </Space>
       )
+    },
+    {
+      title: "Administrators",
+      dataIndex: "admin",
+      key: "faculty",
+      render: (data: any) => (
+        <Avatar.Group
+          maxCount={3}
+        >
+          {data.map((member: any) => (
+            <Tooltip title={member?.name} placement="top">
+              {member?.picture ? (
+                <StyledAvatar src={member?.picture} color={theme.secondary} />
+              ): (
+                <StyledAvatar color={theme.secondary}>
+                  {member?.name[0]}
+                </StyledAvatar>
+              )}
+            </Tooltip>
+          ))}
+        </Avatar.Group>
+      ),
     },
     {
       title: "Faculty",
@@ -151,34 +161,33 @@ const Companies: React.FC<CompaniesProps> = () => {
   ];
 
   useEffect(() => {
-    dispatch(getCompaniesAsync());
+    dispatch(getCompaniesAsync({}));
   }, [dispatch]);
 
   return (
     <Container>
+      <StyledRow justify="space-between">
+        <PageHeader
+          title="Companies"
+          subTitle="Control data of companies here"
+          breadcrumb={{ routes }}
+        />
+        <CustomButton
+          type="primary"
+          icon={<PlusCircleFilled />}
+          onClick={openCompanyForm}
+        >
+          Onboard Company
+        </CustomButton>
+      </StyledRow>
       <StyledTable
-        title={() => (
-          <StyledRow justify="space-between">
-            <PageHeader
-              title="Companies"
-              subTitle="Control data of companies here"
-              breadcrumb={{ routes }}
-            />
-            <Button
-              type="primary"
-              icon={<PlusCircleFilled />}
-              onClick={openCompanyForm}
-            >
-              Onboard Company
-            </Button>
-          </StyledRow>
-        )}
         columns={columns}
         dataSource={instituteData}
+        rowKey={(row: any) => row?._id}
         pagination={false}
       />
       {openForm && (
-        <AddCompanyForm open={openForm} onClose={closeForm} data={formData} />
+        <CompanyForm open={openForm} onClose={closeForm} data={formData} />
       )}
     </Container>
   );
@@ -188,12 +197,9 @@ export default Companies;
 
 const Container = styled.div`
   width: 100%;
-  min-height: 90vh;
+  min-height: 85vh;
+  margin-top: 60px;
   padding: 40px;
-  float: right;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 `;
 
 const StyledRow = styled(Row)`
@@ -203,8 +209,15 @@ const StyledRow = styled(Row)`
 const StyledTable = styled(Table)`
   margin-top: 20px;
   width: 100%;
+  filter: drop-shadow(1px 5px 12px rgba(29, 51, 84, 0.05));
 `;
 
 const StyledAvatar = styled(Avatar)<{ color: string }>`
   background-color: ${(props) => props.color};
+`;
+
+const StyledTag = styled(Tag)<{ color: string }>`
+  background-color: ${(props) => props.color};
+  filter: drop-shadow(1px 3px 4px ${(props) => props.color});
+  color: black;
 `;
