@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import AuthContext from "../../utils/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../utils/routes.enum";
-import { currentUser, USER_ROLES } from "../../utils/constants";
+import { currentUser, REACT_APP_API_HOST, USER_ROLES } from "../../utils/constants";
 
 type LoginProps = {
 
@@ -41,7 +41,7 @@ const Login: React.FC<LoginProps> = () => {
 
   const handleLogin = (values: any) => dispatch(loginAsync({ ...values }))
   const handleSignup = (values: any) => dispatch(signupAsync({ ...values, role: USER_ROLES.USER }))
-  const handleLinkedInLogin = () => window.open(`${process.env.REACT_APP_API_HOST}/auth/linkedin`, "_blank")
+  const handleLinkedInLogin = () => window.open(`${REACT_APP_API_HOST}/auth/linkedin`, "_blank")
   
   return (
     <Container>

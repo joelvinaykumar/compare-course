@@ -1,6 +1,7 @@
 export const STORAGE_KEY_CONSTANT = "compare_course_token"
 export const USER_KEY_CONSTANT = "compare_course_user"
 export const REVIEW_KEY_CONSTANT = "compare_course_review_form"
+export const REACT_APP_API_HOST = process.env.REACT_APP_API_HOST || "https://compare-course-server.vercel.app/api/v1"
 
 export const currentUser = JSON.parse(String(localStorage.getItem(USER_KEY_CONSTANT)))
 
