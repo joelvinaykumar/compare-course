@@ -1,10 +1,10 @@
 import axios from "axios"
 import { notification } from "antd"
-import { STORAGE_KEY_CONSTANT, USER_KEY_CONSTANT } from "./constants";
+import { REACT_APP_API_HOST, STORAGE_KEY_CONSTANT, USER_KEY_CONSTANT } from "./constants";
 import { ROUTES } from "./routes.enum";
 
 const instance =  axios.create({
-  baseURL: process.env.REACT_APP_API_HOST,
+  baseURL: REACT_APP_API_HOST,
   headers: {
     "Authorization": `Bearer ${localStorage.getItem(STORAGE_KEY_CONSTANT)}`
   },
@@ -14,7 +14,7 @@ const instance =  axios.create({
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if(error.response.status === 401 || error.response.status === 403) {
+    if(error?.response?.status === 401 || error?.response?.status === 403) {
       // logout
       localStorage.removeItem(USER_KEY_CONSTANT)
       localStorage.removeItem(STORAGE_KEY_CONSTANT)
