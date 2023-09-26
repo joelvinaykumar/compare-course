@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   Col,
@@ -24,6 +24,7 @@ const Review: React.FC<ReviewProps> = () => {
   const [form] = Form.useForm();
   const { institutePublicData, coursePublicData, error, status } = useAppSelector(selectReview);
   const { authenticated } = useContext(AuthContext);
+  const [submitBtnDisabled, setSubmitBtnDisabled] = useState<boolean>(false);
   const loading = status === 'loading';
   const company = Form.useWatch('company', form);
   const anonymous = Form.useWatch('anonymous', form);
@@ -40,6 +41,9 @@ const Review: React.FC<ReviewProps> = () => {
       form.resetFields();
       localStorage.removeItem(REVIEW_KEY_CONSTANT);
     }
+    setTimeout(() => {
+      setSubmitBtnDisabled(true);
+    }, 60*1000);
   };
 
   useEffect(() => {
@@ -150,7 +154,7 @@ const Review: React.FC<ReviewProps> = () => {
         <Form.Item name="anonymous" label="I'm anonymous" valuePropName="checked" rules={[{ required: false }]}>
           <Checkbox defaultChecked={false}>Stay anonymous</Checkbox>
         </Form.Item>
-        <CustomButton htmlType="submit" loading={loading} disabled={!self_declaration} width={20} type="primary">
+        <CustomButton htmlType="submit" loading={loading} disabled={!self_declaration && submitBtnDisabled} width={20} type="primary">
           Submit my Review
         </CustomButton>
       </StyledForm>

@@ -31,7 +31,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = () => {
 
   useEffect(() => {
     dispatch(getCompanyByIdAsync(String(id)));
-    dispatch(getCoursesAsync());
+    dispatch(getCoursesAsync({}));
   }, [dispatch, id]);
 
   return (

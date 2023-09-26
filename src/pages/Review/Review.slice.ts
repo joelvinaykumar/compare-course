@@ -7,6 +7,7 @@ import API from "../../utils/axios";
 export interface ReviewState {
   institutePublicData: any;
   coursePublicData: any;
+  reviewsData: any;
   instituteDetails: any;
   password: string;
   status: "idle" | "loading" | "failed";
@@ -16,6 +17,7 @@ export interface ReviewState {
 const initialState: ReviewState = {
   coursePublicData: [],
   institutePublicData: [],
+  reviewsData: [],
   instituteDetails: {},
   password: '',
   status: "idle",
@@ -55,6 +57,18 @@ export const addReviewAsync = createAsyncThunk(
   async (input: any, { rejectWithValue }) => {
     try {
       const res = await API.post("/review", input);
+      return res.data
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getReviewsAsync = createAsyncThunk(
+  "user/getReviews",
+  async (filters: any, { rejectWithValue }) => {
+    try {
+      const res = await API.get("/review", { params: filters });
       return res.data
     } catch (error) {
       return rejectWithValue(error);

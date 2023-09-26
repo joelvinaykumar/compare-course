@@ -32,10 +32,9 @@ export const createCourseAsync = createAsyncThunk(
 
 export const getCoursesAsync = createAsyncThunk(
   "admin/getCourses",
-  async (_, { rejectWithValue }) => {
+  async (filters: any, { rejectWithValue }) => {
     try {
-      const currentUser = JSON.parse(localStorage.getItem(USER_KEY_CONSTANT) || "")
-      return (await API.get("/course", { params: { company: currentUser.organization._id } })).data;
+      return (await API.get("/course/public", { params: { ...filters } })).data;
     } catch (error) {
       return rejectWithValue(error);
     }
