@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Row,
   Col,
@@ -17,6 +17,7 @@ import FilterBox from "./components";
 import { selectCourse, getCoursesAsync } from "../Admin/coursesSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { CourseCard } from "../../components";
+import { debounce } from "lodash";
 
 type CoursesProps = {};
 
@@ -27,10 +28,13 @@ const Courses: React.FC<CoursesProps> = () => {
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [rating, setRating] = useState<number>(5);
+  const [types, setTypes] = useState<string[]>([]);
   const [classTypes, setClassTypes] = useState<string[]>([]);
   const [courseTypes, setCourseTypes] = useState<string[]>([]);
   const [categoryTypes, setCategoryTypes] = useState<string[]>([]);
 
+  const typeOptions = ["Certifications/Upskill", "CompetetiveExams"];
+  
   const classTypeOptions = ["Online", "Offline", "Hybrid"];
 
   const courseTypeOptions = [
@@ -60,9 +64,26 @@ const Courses: React.FC<CoursesProps> = () => {
     setCategoryTypes([]);
   };
 
+  const debouncedSearch = useCallback(
+    debounce((text) => {
+      dispatch(getCoursesAsync({
+        rating,
+        type: types,
+        classType: classTypes,
+        mode: courseTypes,
+        title: text,
+      }))
+    }, 600)  
+  , [classTypes, courseTypes, dispatch, rating, types]);
+
   useEffect(() => {
-    dispatch(getCoursesAsync());
-  }, [dispatch]);
+    dispatch(getCoursesAsync({
+      rating,
+      type: types,
+      classType: classTypes,
+      mode: courseTypes,
+    }));
+  }, [dispatch, rating, types, classTypes, courseTypes]);
 
   return (
     <Container>
@@ -71,7 +92,10 @@ const Courses: React.FC<CoursesProps> = () => {
           placeholder="Search ..."
           suffix={<SearchOutlined />}
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => {
+            setSearchQuery(e.target.value)
+            debouncedSearch(e.target.value)
+          }}
           inputMode="search"
           allowClear
         />
@@ -95,13 +119,19 @@ const Courses: React.FC<CoursesProps> = () => {
           max={5}
         />
         <FilterBox
+          title="Types"
+          getter={types}
+          options={typeOptions}
+          setter={setTypes}
+        />
+        <FilterBox
           title="Class Types"
           getter={classTypes}
           options={classTypeOptions}
           setter={setClassTypes}
         />
         <FilterBox
-          title="Course Types"
+          title="Course Mode"
           getter={courseTypes}
           options={courseTypeOptions}
           setter={setCourseTypes}
@@ -116,6 +146,17 @@ const Courses: React.FC<CoursesProps> = () => {
       <Content>
         {classTypes && (
           <SelectedTagsArea>
+            {types.map((tag) => (
+              <StyledTag
+                key={tag}
+                closable
+                onClose={() => {
+                  setTypes(types.filter((c) => c !== tag));
+                }}
+              >
+                {tag}
+              </StyledTag>
+            ))}
             {classTypes.map((tag) => (
               <StyledTag
                 key={tag}

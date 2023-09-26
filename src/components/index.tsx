@@ -7,6 +7,8 @@ import CustomButton from "./CustomButton";
 import CourseCard from "./CourseCard";
 import CarouselCard from "./CarouselCard";
 import PrivateRoute from "./PrivateRoute";
+import Reviews from "./Reviews";
+import Locked from "./Locked";
 
 export {
   AuthRole,
@@ -18,4 +20,6 @@ export {
   CourseCard,
   CarouselCard,
   PrivateRoute,
+  Reviews,
+  Locked,
 };

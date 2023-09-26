@@ -65,7 +65,7 @@ const CourseForm: React.FC<AddCourseFormProps> = ({
       await dispatch(updateCourseAsync({ id: data?._id, input }));
     } else {
       dispatch(createCourseAsync(input));
-      setTimeout(() => dispatch(getCoursesAsync()), 600);
+      setTimeout(() => dispatch(getCoursesAsync({})), 600);
     }
     onClose();
   };

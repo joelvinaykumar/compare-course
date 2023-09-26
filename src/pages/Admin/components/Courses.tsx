@@ -34,7 +34,7 @@ const Courses: React.FC<CoursesProps> = () => {
   const closeForm = () => setOpenForm(false);
   const handleDelete = async (id: string) => {
     await dispatch(deleteCourseAsync(id))
-    dispatch(getCoursesAsync())
+    dispatch(getCoursesAsync({}))
   }
 
   const routes = [
@@ -136,7 +136,7 @@ const Courses: React.FC<CoursesProps> = () => {
   ];
 
   useEffect(() => {
-    dispatch(getCoursesAsync());
+    dispatch(getCoursesAsync({}));
   }, [dispatch]);
 
   return (
