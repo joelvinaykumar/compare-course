@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Menu,
   Button,
@@ -27,8 +27,7 @@ const { Header } = Layout;
 const Navbar: React.FC<NavbarProps> = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const location = useLocation();
-  const currentRoute = location.pathname.split("/").pop();
+
   const routes = [
     { title: "Home", route: "/" },
     {
@@ -124,7 +123,6 @@ const Navbar: React.FC<NavbarProps> = () => {
       </Button>
     </Dropdown>
   );
-  console.log(getRoutes());
 
   return (
     <StyledHeader theme="light">

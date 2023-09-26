@@ -6,7 +6,8 @@ import API from "../../utils/axios";
 import { USER_KEY_CONSTANT } from "../../utils/constants";
 
 export interface CourseState {
-  courseData: any;
+  courseData: any[];
+  homeCoursesData: any[];
   courseDetails: any;
   status: "idle" | "loading" | "failed";
   error: string | null;
@@ -14,6 +15,7 @@ export interface CourseState {
 
 const initialState: CourseState = {
   courseData: [],
+  homeCoursesData: [],
   courseDetails: {},
   status: "idle",
   error: null,
@@ -30,11 +32,22 @@ export const createCourseAsync = createAsyncThunk(
   }
 );
 
-export const getCoursesAsync = createAsyncThunk(
-  "admin/getCourses",
+export const getPublicCoursesAsync = createAsyncThunk(
+  "admin/getPublicCourses",
   async (filters: any, { rejectWithValue }) => {
     try {
       return (await API.get("/course/public", { params: { ...filters } })).data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getHomeCoursesAsync = createAsyncThunk(
+  "admin/getHomeCourses",
+  async (_, { rejectWithValue }) => {
+    try {
+      return (await API.get("/course/home")).data;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -97,19 +110,35 @@ export const courseSlice = createSlice({
 
     // Get all
     builder
-      .addCase(getCoursesAsync.pending, (state, action) => {
+      .addCase(getPublicCoursesAsync.pending, (state, action) => {
         state.status = "loading";
       })
-      .addCase(getCoursesAsync.fulfilled, (state, action) => {
+      .addCase(getPublicCoursesAsync.fulfilled, (state, action) => {
         state.status = "idle";
         // @ts-ignore
         state.courseData = action.payload;
       })
-      .addCase(getCoursesAsync.rejected, (state, action: any) => {
+      .addCase(getPublicCoursesAsync.rejected, (state, action: any) => {
         state.status = "failed";
         state.error = String(action?.payload?.message);
         notification.error({ message: action?.payload?.message });
       });
+
+      // Get all
+    builder
+    .addCase(getHomeCoursesAsync.pending, (state, action) => {
+      state.status = "loading";
+    })
+    .addCase(getHomeCoursesAsync.fulfilled, (state, action) => {
+      state.status = "idle";
+      // @ts-ignore
+      state.homeCoursesData = action.payload;
+    })
+    .addCase(getHomeCoursesAsync.rejected, (state, action: any) => {
+      state.status = "failed";
+      state.error = String(action?.payload?.message);
+      notification.error({ message: action?.payload?.message });
+    });
 
     // Get Details
     builder

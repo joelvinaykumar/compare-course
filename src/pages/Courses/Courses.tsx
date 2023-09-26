@@ -14,7 +14,7 @@ import {
 import styled from "styled-components";
 
 import FilterBox from "./components";
-import { selectCourse, getCoursesAsync } from "../Admin/coursesSlice";
+import { selectCourse, getPublicCoursesAsync } from "../Admin/coursesSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { CourseCard } from "../../components";
 import { debounce } from "lodash";
@@ -42,7 +42,7 @@ const Courses: React.FC<CoursesProps> = () => {
     "Short-Term",
     "Long-Term",
     "Self-Learning",
-    "Live Classes",
+    "Live-Classes",
   ];
 
   const categoryOptions = [
@@ -66,7 +66,7 @@ const Courses: React.FC<CoursesProps> = () => {
 
   const debouncedSearch = useCallback(
     debounce((text) => {
-      dispatch(getCoursesAsync({
+      dispatch(getPublicCoursesAsync({
         rating,
         type: types,
         classType: classTypes,
@@ -77,7 +77,7 @@ const Courses: React.FC<CoursesProps> = () => {
   , [classTypes, courseTypes, dispatch, rating, types]);
 
   useEffect(() => {
-    dispatch(getCoursesAsync({
+    dispatch(getPublicCoursesAsync({
       rating,
       type: types,
       classType: classTypes,

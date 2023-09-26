@@ -3,16 +3,33 @@ import styled from "styled-components"
 import { Typography } from "antd";
 
 import theme from "../utils/theme";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../utils/routes.enum";
 
 type CarouselCardProps = {
-
+  _id: string,
+  title: string,
+  thumbnail: string,
+  ratings: string[],
 }
 
-const CarouselCard: React.FC<CarouselCardProps> = () => {
+const CarouselCard: React.FC<CarouselCardProps> = ({
+  _id,
+  title,
+  thumbnail,
+  ratings
+}) => {
+  const navigate = useNavigate()
+
+  const handleNavigate = () => navigate(`../../${ROUTES.COURSE}/${_id}`)
+
   return (
-    <CardContainer imageSource={"https://sarahcordiner.com/wp-content/uploads/2019/10/YouTube-Thumbnail.png"}>
-      <Title strong>How to create your beginner online course | Step 3</Title>
-      <Views>10.7k reviwed this course</Views>
+    <CardContainer
+      imageSource={thumbnail || require("../assets/CardCover.png")}
+      onClick={handleNavigate}
+    >
+      <Title strong>{title}</Title>
+      <Views>{ratings.length} reviwed this course</Views>
     </CardContainer>
   )
 };
