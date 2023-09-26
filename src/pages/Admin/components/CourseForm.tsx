@@ -18,7 +18,7 @@ import Quill from "react-quill";
 import {
   createCourseAsync,
   updateCourseAsync,
-  getCoursesAsync,
+  getPublicCoursesAsync,
   selectCourse,
 } from "../coursesSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
@@ -65,7 +65,7 @@ const CourseForm: React.FC<AddCourseFormProps> = ({
       await dispatch(updateCourseAsync({ id: data?._id, input }));
     } else {
       dispatch(createCourseAsync(input));
-      setTimeout(() => dispatch(getCoursesAsync({})), 600);
+      setTimeout(() => dispatch(getPublicCoursesAsync({})), 600);
     }
     onClose();
   };

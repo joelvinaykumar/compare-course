@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import theme from "../../../utils/theme";
 import { CourseCard, CustomButton } from "../../../components";
 import { CourseForm } from "../../Admin/components";
-import { getCoursesAsync, selectCourse } from "../../Admin/coursesSlice";
+import { getPublicCoursesAsync, selectCourse } from "../../Admin/coursesSlice";
 import { currentUser, USER_ROLES } from "../../../utils/constants";
 import CompanyForm from "./CompanyForm";
 
@@ -31,7 +31,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = () => {
 
   useEffect(() => {
     dispatch(getCompanyByIdAsync(String(id)));
-    dispatch(getCoursesAsync({}));
+    dispatch(getPublicCoursesAsync({}));
   }, [dispatch, id]);
 
   return (

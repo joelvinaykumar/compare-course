@@ -47,7 +47,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
     <Badge.Ribbon text={ribbonText}  >
       <CardContainer onClick={handleNavigate}>
         {!!cover && <CoverImage src={cover} />}
-        <Title strong>{title}</Title>
+        <Title strong>{title.slice(0, 45)}{title.length>45? "...": ""}</Title>
         <Views type="secondary">{Number(ratings)} reviwed this course</Views>
         <Views>{renderTags()}</Views>
       </CardContainer>

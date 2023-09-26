@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Input, Typography, Row, Col, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
@@ -6,11 +6,19 @@ import { SearchOutlined } from "@ant-design/icons";
 import { SuperAdmin, Admin } from "../../pages";
 import { CarouselCard } from "../../components";
 import { currentUser, USER_ROLES } from "../../utils/constants";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { getHomeCoursesAsync, selectCourse } from "../Admin/coursesSlice";
 
 type HomeProps = {};
 
 const Home: React.FC<HomeProps> = () => {
+  const dispatch = useAppDispatch();
+  const { homeCoursesData } = useAppSelector(selectCourse);
   const [searchQuery, setSearchQuery] = React.useState<string>("");
+
+  useEffect(() => {
+    dispatch(getHomeCoursesAsync())
+  }, [dispatch]);
 
   if (currentUser?.role === USER_ROLES.SUPER_ADMIN) {
     return <SuperAdmin />;
@@ -41,23 +49,23 @@ const Home: React.FC<HomeProps> = () => {
           <Typography.Title level={3}>Data Science courses</Typography.Title>
           <Typography.Link>See More</Typography.Link>
         </Space>
-        <Row gutter={[40, 8]}>
-          {new Array(4).fill(0).map((_) => (
+        <Row gutter={[40, 8]} style={{width: '100%'}}>
+          {[...homeCoursesData].map((course) => (
             <StyledCol span={6}>
-              <CarouselCard />
+              <CarouselCard {...course} />
             </StyledCol>
           ))}
         </Row>
       </StyledRow>
       <StyledRow align="top">
         <Space align="baseline">
-          <Typography.Title level={3}>Data Science courses</Typography.Title>
+          <Typography.Title level={3}>Fullstack Development courses</Typography.Title>
           <Typography.Link>See More</Typography.Link>
         </Space>
-        <Row gutter={[40, 8]}>
-          {new Array(4).fill(0).map((_) => (
+        <Row gutter={[40, 8]} style={{width: '100%'}}>
+          {homeCoursesData.map((course) => (
             <StyledCol span={6}>
-              <CarouselCard />
+              <CarouselCard {...course} />
             </StyledCol>
           ))}
         </Row>
@@ -100,6 +108,7 @@ const SubText = styled(Typography.Text)`
 
 const StyledRow = styled(Row)`
   margin-top: 50px;
+  width: 80%;
   margin-bottom: 30px;
   flex-direction: column;
 `;

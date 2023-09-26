@@ -15,7 +15,7 @@ import { PlusCircleFilled, EditFilled, DeleteFilled } from "@ant-design/icons";
 import AddCourseForm from "./CourseForm";
 import {
   deleteCourseAsync,
-  getCoursesAsync,
+  getPublicCoursesAsync,
   selectCourse,
 } from "../coursesSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
@@ -34,7 +34,7 @@ const Courses: React.FC<CoursesProps> = () => {
   const closeForm = () => setOpenForm(false);
   const handleDelete = async (id: string) => {
     await dispatch(deleteCourseAsync(id))
-    dispatch(getCoursesAsync({}))
+    dispatch(getPublicCoursesAsync({}))
   }
 
   const routes = [
@@ -136,7 +136,7 @@ const Courses: React.FC<CoursesProps> = () => {
   ];
 
   useEffect(() => {
-    dispatch(getCoursesAsync({}));
+    dispatch(getPublicCoursesAsync({}));
   }, [dispatch]);
 
   return (
