@@ -154,7 +154,7 @@ const Review: React.FC<ReviewProps> = () => {
         <Form.Item name="anonymous" label="I'm anonymous" valuePropName="checked" rules={[{ required: false }]}>
           <Checkbox defaultChecked={false}>Stay anonymous</Checkbox>
         </Form.Item>
-        <CustomButton htmlType="submit" loading={loading} disabled={!self_declaration && submitBtnDisabled} width={20} type="primary">
+        <CustomButton htmlType="submit" loading={loading} disabled={!self_declaration || submitBtnDisabled} width={20} type="primary">
           Submit my Review
         </CustomButton>
       </StyledForm>

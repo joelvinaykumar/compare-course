@@ -10,6 +10,7 @@ import {
   Button,
   Tabs,
   TabsProps,
+  Badge,
 } from "antd";
 import ReactQuill from "react-quill";
 import { useParams } from "react-router-dom";
@@ -26,6 +27,7 @@ import { CustomButton, Reviews, Locked } from "../../components";
 import { CourseForm } from "../Admin/components";
 import { currentUser, getAvatarUrl, USER_ROLES } from "../../utils/constants";
 import AuthContext from "../../utils/AuthContext";
+import { formatDate } from "../../utils/helpers";
 
 type CourseDetailsProps = {};
 
@@ -47,15 +49,6 @@ const CourseDetails: React.FC<CourseDetailsProps> = () => {
   const Font = ReactQuill.Quill.import("formats/font"); // <<<< ReactQuill exports it
   Font.whitelist = ["DM Sans"]; // allow ONLY these fonts and the default
   ReactQuill.Quill.register(Font, true);
-
-  const formatDate = (date: string) =>
-    new Date(date).toLocaleString("en-US", {
-      month: "long",
-      day: "numeric",
-      hour12: true,
-      hour: "numeric",
-      minute: "numeric",
-    });
 
   const goBack = () => navigate(-1);
 
@@ -108,8 +101,8 @@ const CourseDetails: React.FC<CourseDetailsProps> = () => {
     },
     {
       key: "reviews",
-      label: "Reviews",
-      children: authenticated? <Reviews type="course" id={id} />: <Locked />,
+      label: <Badge count={7} text=" ">Reviews</Badge>,
+      children: authenticated? <Reviews type="course" id={String(id)} />: <Locked />,
     },
   ];
 
@@ -133,7 +126,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = () => {
           defaultActiveKey="reviews"
           items={items}
           onChange={(key) => console.log(key)}
-          style={{width: '60%'}}
+          style={{width: '50%'}}
         />
         <CourseCard>
           <Cover

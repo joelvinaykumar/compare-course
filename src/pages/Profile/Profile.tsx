@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { fetchProfileAsync, selectProfile } from "./profile.slice";
+import { Reviews } from "../../components";
 
 type ProfileProps = {
 
@@ -21,12 +22,12 @@ const Profile: React.FC<ProfileProps> = () => {
     {
       key: 'reviews',
       label: 'Reviews',
-      children: '',
+      children: <Reviews type="user" id={data._id} />,
     },
     {
       key: 'rewards',
       label: 'Rewards',
-      children: '',
+      children: 'This feature is coming soon',
     },
   ];
 
@@ -38,7 +39,7 @@ const Profile: React.FC<ProfileProps> = () => {
         <Typography.Title level={5} type="secondary">{data?.role}</Typography.Title>
       </HeaderRow>
       <DetailsRow>
-        <Tabs defaultActiveKey="reviews" items={items} onChange={(key: string) => {
+        <Tabs defaultActiveKey="reviews" items={items} style={{width: "50%"}} centered onChange={(key: string) => {
           console.log(key);
         }} />
       </DetailsRow>
@@ -61,6 +62,7 @@ const HeaderRow = styled(Row)`
 const DetailsRow = styled(Row)`
   min-height: 400px;
   display: flex;
+  width: 100%;
   justify-content: center;
   background-color: white;
 `
