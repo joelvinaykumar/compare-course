@@ -124,6 +124,21 @@ export const reviewSlice = createSlice({
         state.error = String(action?.payload?.message);
         notification.error({ message: action?.payload?.message });
       });
+
+    // Get all Reviews
+    builder
+    .addCase(getReviewsAsync.pending, (state, action) => {
+      state.status = "loading";
+    })
+    .addCase(getReviewsAsync.fulfilled, (state, action: any) => {
+      state.status = "idle";
+      state.reviewsData = action.payload;
+    })
+    .addCase(getReviewsAsync.rejected, (state, action: any) => {
+      state.status = "failed";
+      state.error = String(action?.payload?.message);
+      notification.error({ message: action?.payload?.message });
+    });
   },
 });
 

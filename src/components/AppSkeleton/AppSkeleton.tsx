@@ -24,7 +24,7 @@ const AppSkeleton: React.FC<AppSkeletonProps> = () => {
       </Layout>
       <Footer>
         <Row justify="center">
-          Copyrights @ 2022. Compare Courses. All rights reserved
+          Copyrights @ 2023. Compare Courses. All rights reserved
         </Row>
       </Footer>
     </Layout>

@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Card, Avatar, Row, Col, Typography, Tabs, Empty } from "antd";
-import { EditFilled } from "@ant-design/icons";
+import { Card, Avatar, Row, Col, Typography, Tabs, Statistic } from "antd";
+import { EditFilled, StarFilled } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import Quill from "react-quill";
 import styled from "styled-components";
+import { BsIncognito } from "react-icons/bs";
 
 import { getCompanyByIdAsync, selectCompany } from "../companySlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import theme from "../../../utils/theme";
-import { CourseCard, CustomButton } from "../../../components";
+import { CourseCard, CustomButton, Reviews } from "../../../components";
 import { CourseForm } from "../../Admin/components";
 import { getPublicCoursesAsync, selectCourse } from "../../Admin/coursesSlice";
 import { currentUser, USER_ROLES } from "../../../utils/constants";
 import CompanyForm from "./CompanyForm";
+import { selectReview } from "../../Review/Review.slice";
 
 type CompanyDetailsProps = {};
 
@@ -21,6 +23,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = () => {
   const dispatch = useAppDispatch();
   const { instituteDetails } = useAppSelector(selectCompany);
   const { courseData } = useAppSelector(selectCourse);
+  const { reviewsData } = useAppSelector(selectReview);
 
   const [courseFormVisible, setCourseFormVisible] = useState<boolean>(false);
   const [companyFormVisible, setCompanyFormVisible] = useState<boolean>(false);
@@ -102,6 +105,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = () => {
                       id={course?._id}
                       createdAt={course?.createdAt}
                       title={course.title}
+                      cover={course?.thumbnail}
                       tags={[course.class_type, course.type, course.mode]}
                       ratings={course?.ratings?.length}
                     />
@@ -110,7 +114,29 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = () => {
               </StyledRow>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Reviews" key="reviews">
-              <Empty description="No reviews at this time."/>
+              <ReviewsContainer>
+                <Card bordered={!false}>
+                  <Row>
+                    <Col span={12}>
+                      <Statistic
+                        title="Total reviews"
+                        value={reviewsData.length}
+                        valueStyle={{ color: theme.primary }}
+                        prefix={<StarFilled />}
+                      />
+                    </Col>
+                    <Col span={12}>
+                      <Statistic
+                        title="Anonymous reviews"
+                        value={reviewsData.filter((r: any) => r.anonymous).length}
+                        valueStyle={{ color: theme.secondary }}
+                        prefix={<BsIncognito />}
+                      />
+                    </Col>
+                  </Row>
+                </Card>
+                <Reviews type="company" id={instituteDetails._id} />
+              </ReviewsContainer>
             </Tabs.TabPane>
           </Tabs>
         </Card>
@@ -159,4 +185,8 @@ const StyledRow = styled(Row)`
 const EditIcon = styled(EditFilled)`
   margin-left: 10px;
   font-size: 18px;
+`
+
+const ReviewsContainer = styled.div`
+  width: 50%;
 `

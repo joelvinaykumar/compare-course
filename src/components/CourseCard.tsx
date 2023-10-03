@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { Typography, Badge } from "antd";
 import { useNavigate } from "react-router-dom";
-import Skeleton from "react-loading-skeleton"
 
 import { ROUTES } from "../utils/routes.enum";
 
@@ -12,7 +11,6 @@ type CourseCardProps = {
   tags: string[],
   ratings: number,
   cover?: string,
-  loading?: boolean,
   createdAt: string,
 };
 
@@ -21,7 +19,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
   title,
   ratings,
   tags,
-  loading = false,
   createdAt,
   cover = require("../assets/CardCover.png")
 }) => {
@@ -36,12 +33,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
   const handleNavigate = () => navigate(`../../${ROUTES.COURSE}/${id}`)
 
   const ribbonText = (new Date(createdAt).getDate() - new Date().getDate())? "New": null  
-
-  if(loading) {
-    return (
-      <Skeleton />
-    )
-  }
 
   return (
     <Badge.Ribbon text={ribbonText}  >

@@ -6,6 +6,7 @@ import {
   Slider,
   Typography,
   Tag,
+  Spin,
 } from "antd";
 import {
   SearchOutlined,
@@ -193,19 +194,23 @@ const Courses: React.FC<CoursesProps> = () => {
           </SelectedTagsArea>
         )}
         <Row gutter={[40, 24]}>
-          {courseData.map((item: any) => (
-            <Col span={6}>
-              <CourseCard
-                id={item?._id}
-                loading={loading}
-                createdAt={item?.createdAt}
-                title={item?.title}
-                ratings={item?.ratings?.length}
-                tags={[item?.type, item?.class_type, item?.mode]}
-                key={item?._id}
-              />
-            </Col>
-          ))}
+          {loading? (
+            <SpinContainer><Spin size="large" /></SpinContainer>
+          ): <>
+            {courseData.map((item: any) => (
+              <Col span={6}>
+                <CourseCard
+                  id={item?._id}
+                  createdAt={item?.createdAt}
+                  title={item?.title}
+                  ratings={item?.ratings?.length}
+                  cover={item?.thumbnail}
+                  tags={[item?.type, item?.class_type, item?.mode]}
+                  key={item?._id}
+                />
+              </Col>
+            ))}
+          </>}
         </Row>
       </Content>
     </Container>
@@ -258,3 +263,11 @@ const StyledTag = styled(Tag)`
   color: #1b263b;
   filter: drop-shadow(1px 1px 10px rgba(205, 218, 253, 1));
 `;
+
+const SpinContainer = styled(Row)`
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
